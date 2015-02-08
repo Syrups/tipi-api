@@ -15,7 +15,14 @@ class ApiController < ApplicationController
   		render nothing: true, status: :unauthorized
   	end
 
-  	user = User.find(token: params[:token])
-  	
+  	@current_user = User.find(token: params[:token])
+
+  	if @current_user.nil?
+  		render nothing: true, status: :unauthorize
+  	end
+  end
+
+  def current_user
+  	@current_user
   end
 end

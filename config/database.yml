@@ -1,3 +1,11 @@
+default:
+  adapter: postgresql
+  encoding: unicode
+  database: fables
+  pool: 5
+  username: postgres
+  password: postgres
+
 development:
   adapter: postgresql
   encoding: unicode
@@ -9,7 +17,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: fables_test
+  database: fables
   pool: 5
   username: postgres
   password: postgres
