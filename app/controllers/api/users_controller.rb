@@ -2,31 +2,36 @@ require 'securerandom'
 
 class Api::UsersController < ApiController
 
+  # Verify request authentication for all endpoints
+  # except user creation
+  before_filter :authenticate_request, except: :create
+
   before_filter :find_user, only: [:show, :update, :destroy]
 
   api!
   def create
-  	@user = User.find(username: params[:username])
+  	@user = Api::User.find_by_username(params[:username])
 
   	# Respond with 409 conflict if username is already taken
   	if @user.present?
   	  render nothing: true, status: :conflict 
-  	end
-
-  	salt = SecureRandom.hex
-  	password = hash_password(params[:password], salt)
-
-  	@user = User.build(username: params[:username], password: password, salt: salt)
-
-  	if @user.save
-  	  render json: @user
   	else
-  	  render nothing: true, status: :bad_request
+    	salt = SecureRandom.hex
+    	password = hash_password(params[:password], salt)
+
+    	@user = Api::User.new(username: params[:username], password: password, salt: salt)
+
+    	if @user.save
+    	  render json: @user
+    	else
+    	  render nothing: true, status: :bad_request
+      end
     end
   end
 
   api!
   def show
+    render json: @user
   end
   
   api!
@@ -39,11 +44,11 @@ class Api::UsersController < ApiController
 
   private
   	def find_user
-  	  @user = User.find params[:id]
+  	  @user = Api::User.find params[:id]
   	  render nothing: true, status: :not_found unless @user.present? and @user.id == current_user.id
   	end
 
   	def hash_password(plain, salt)
-  	  Digest::SHA2.new(512).digest(plain + ':' + salt)
+  	  Digest::SHA2.new(512).digest(plain + ':' + salt).hex
   	end
 end

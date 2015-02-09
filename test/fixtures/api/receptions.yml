@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  received_at: 2015-02-08 15:00:52
+  acknowledged: false
+  user_id: 1
+  receiver_id: 1
+
+two:
+  received_at: 2015-02-08 15:00:52
+  acknowledged: false
+  user_id: 1
+  receiver_id: 1

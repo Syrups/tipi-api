@@ -1,24 +1,20 @@
 class ApiController < ApplicationController
 
-  # Verify request authentication for all endpoints
-  # except authentication one
-  before_filter :authenticate_request, except: :authenticate
-
   def authenticate
-  	render :json => 'Bad Request', :status => :bad_request
+  	render nothing: true, :status => :bad_request unless params[:user].present? and params[:signature].present?
   end
 
   private
 
   def authenticate_request
-  	if params[:token].nil? or params[:signature].nil?
-  		render nothing: true, status: :unauthorized
+  	if not params[:token].present?
+  		render json: 'No token provided', status: :unauthorized
   	end
 
-  	@current_user = User.find(token: params[:token])
+  	@current_user = Api::User.find_by_token(params[:token])
 
   	if @current_user.nil?
-  		render nothing: true, status: :unauthorize
+  		render json: 'Bad token', status: :unauthorized
   	end
   end
 

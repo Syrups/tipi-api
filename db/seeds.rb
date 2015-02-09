@@ -1,12 +1,17 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
+# Some sample data
 #
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+# Run rake db:seed to seed in DB
 
-foo = Api::User.create(username: 'foo')
-bar = foo.subscribers.create(username: 'bar')
-baz = bar.subscribed.create(username: 'baz')
-foz = baz.subscribers.create(username: 'foz')
+leo = Api::User.create(username: 'Léo')
+
+story = leo.stories.create(title: 'Costa Rica journey')
+
+glenn = Api::User.create(username: 'Glenn')
+
+leo.subscribers << glenn
+story.receivers << glenn
+
+story.pages << Api::Page.create(position: 1)
+story.pages << Api::Page.create(position: 2)
+story.pages << Api::Page.create(position: 3)
+
