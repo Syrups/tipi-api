@@ -14,6 +14,18 @@ class Api::SubscriptionsController < ApiController
 		end
 	end
 
+	def update
+		subscription = Api::Subscribtion.find(params[:id])
+
+		if subscription.present?
+			subscription.update!(subscription_params)
+
+			render json: { message: "Subscribed" }, status: :ok
+		else
+			render nothing: true, status: :not_found
+		end
+	end
+
 	private
 		def subscription_params
 			params.require(:subscription).permit(:active)

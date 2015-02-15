@@ -20,6 +20,7 @@ Rails.application.routes.draw do
 
         get '/subscribed', on: :member, to: 'users#subscribed'
         get '/subscribers', on: :member, to: 'users#subscribers'
+        get '/invitations', on: :member, to: 'users#invitations'
       end
 
     end

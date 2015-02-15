@@ -49,6 +49,38 @@ class Api::UsersController < ApiController
     render json: { message: 'User destroyed' }, status: 200
   end
 
+  api!
+  def subscribers
+    user = Api::User.find(params[:id])
+
+    if user.id != current_user.id
+      render nothing: true, status: :not_found
+    else
+      render json: user.subscribers, status: :ok
+    end
+  end
+
+  api!
+  def subscribed
+    user = Api::User.find(params[:id])
+
+    if user.id != current_user.id
+      render nothing: true, status: :not_found
+    else
+      render json: user.subscribed, status: :ok
+    end
+  end
+
+  def invitations
+    user = Api::User.find(params[:id])
+
+    if user.id != current_user.id
+      render nothing: true, status: :not_found
+    else
+      render json: user.invitations, status: :ok
+    end
+  end
+
   private
   	def find_user
   	  @user = Api::User.find params[:id]
