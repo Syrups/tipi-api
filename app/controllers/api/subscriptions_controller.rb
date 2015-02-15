@@ -2,22 +2,20 @@ class Api::SubscriptionsController < ApiController
 	before_filter :authenticate_request
 
 	def create
-
-		user = Api::User.find(params[:user_id])
-
-		if user.present?
+		begin
+			user = Api::User.find(params[:user_id])
 			current_user.invite(user)
 
 			render json: { message: 'Invited' }, status: :ok
-		else
+		rescue ActiveRecord::RecordNotFound => e
 			render nothing: true, status: :not_found
 		end
 	end
 
 	def update
-		subscription = Api::Subscribtion.find(params[:id])
+		begin
+			subscription = Api::Subscribtion.find(params[:id])
 
-		if subscription.present?
 			if current_user.id == subscription.subscriber_id
 				subscription.update!(subscription_params)
 
@@ -25,7 +23,8 @@ class Api::SubscriptionsController < ApiController
 			else
 				render nothing: true, status: :not_found
 			end
-		else
+			
+		rescue ActiveRecord::RecordNotFound => e
 			render nothing: true, status: :not_found
 		end
 	end

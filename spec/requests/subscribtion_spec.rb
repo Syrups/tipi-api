@@ -15,6 +15,14 @@ describe 'Subscription API' do
 
 			expect(@glenn.invitations.length).to eq 1
 		end
+
+		it 'should not found the user' do
+			post api("/users/0/subscriptions"), {
+				:subscription => { :active => false }
+			}.to_json, api_headers(token: @leo.token)
+
+			expect(response.status).to eq 404
+		end
 	end
 
 	describe 'PUT /subscriptions/:id' do
@@ -47,6 +55,14 @@ describe 'Subscription API' do
 			s = Api::Subscribtion.take
 
 			put api("/subscriptions/#{s.id}"), {
+				subscription: { active: false }
+			}.to_json, api_headers(token: @leo.token)
+
+			expect(response.status).to eq 404
+		end
+
+		it 'should not find unexisting subscription' do
+			put api("/subscriptions/0"), {
 				subscription: { active: false }
 			}.to_json, api_headers(token: @leo.token)
 

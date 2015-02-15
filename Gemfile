@@ -43,6 +43,9 @@ group :development, :test do
   gem 'factory_girl'
   gem 'factory_girl_rails'
 
+  # Code coverage
+  gem 'simplecov'
+
   # Api documentation
 	gem 'apipie-rails'
 

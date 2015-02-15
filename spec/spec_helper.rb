@@ -1,4 +1,7 @@
 require 'factory_girl'
+require 'simplecov'
+
+SimpleCov.start 'rails'
 
 # Helper to build full API paths
 def api(path)

@@ -15,12 +15,27 @@ describe 'API' do
 		expect(response.status).to eq 200
 	end
 
-	it 'should not authenticate user with bad credentials' do
+	it 'should not authenticate user with wrong username' do
+		post api('/authenticate'), {
+			:username => 'idontexist',
+			:password => 'thisisnotmypassword'
+		}.to_json, api_headers
+
+		expect(response.status).to eq 404
+	end
+
+	it 'should not authenticate user with wrong password' do
 		post api('/authenticate'), {
 			:username => @user.username,
 			:password => 'thisisnotmypassword'
 		}.to_json, api_headers
 
 		expect(response.status).to eq 404
+	end
+
+	it 'should not authorize unauthenticated user' do
+		get api("/users/#{@user.id}"), {}, api_headers
+
+		expect(response.status).to eq 401
 	end
 end
