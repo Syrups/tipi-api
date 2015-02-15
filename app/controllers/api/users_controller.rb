@@ -5,7 +5,6 @@ class Api::UsersController < ApiController
   # Verify request authentication for all endpoints
   # except user creation
   before_filter :authenticate_request, except: :create
-
   before_filter :find_user, except: :create
 
   api!
