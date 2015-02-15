@@ -6,6 +6,7 @@ class Api::UsersController < ApiController
   # except user creation
   before_filter :authenticate_request, except: :create
   before_filter :find_user, except: :create
+  before_filter :check_access, except: [:create, :show]
 
   api!
   def create
@@ -51,34 +52,16 @@ class Api::UsersController < ApiController
 
   api!
   def subscribers
-    user = Api::User.find(params[:id])
-
-    if user.id != current_user.id
-      render nothing: true, status: :not_found
-    else
-      render json: user.subscribers, status: :ok
-    end
+    render json: @user.subscribers, status: :ok
   end
 
   api!
   def subscribed
-    user = Api::User.find(params[:id])
-
-    if user.id != current_user.id
-      render nothing: true, status: :not_found
-    else
-      render json: user.subscribed, status: :ok
-    end
+    render json: @user.subscribed, status: :ok
   end
 
   def invitations
-    user = Api::User.find(params[:id])
-
-    if user.id != current_user.id
-      render nothing: true, status: :not_found
-    else
-      render json: user.invitations, status: :ok
-    end
+    render json: @user.invitations, status: :ok
   end
 
   private
@@ -86,6 +69,16 @@ class Api::UsersController < ApiController
   	  @user = Api::User.find params[:id]
   	  render nothing: true, status: :not_found unless @user.present? and @user.id == current_user.id
   	end
+
+    def check_access
+      if @user.nil?
+        @user = Api::User.find(params[:id])
+      else
+        if @user.id != current_user.id
+          render nothing: true, status: :not_found
+        end
+      end
+    end
 
     def user_params
       params.require(:user).permit(:username, :password)

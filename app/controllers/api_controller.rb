@@ -9,12 +9,12 @@ class ApiController < ApplicationController
       credentials_password = Security.hash_password(params[:password], user.salt)
 
       if ::Devise.secure_compare(user.password, credentials_password)
-        render json: user, status: 200
+        render json: user, status: :ok
       else
-        render nothing: true, status: 404
+        render nothing: true, status: :not_found
       end
     else
-      render nothing: true, status: 404
+      render nothing: true, status: :not_found
     end
   end
 

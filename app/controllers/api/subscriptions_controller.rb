@@ -18,9 +18,13 @@ class Api::SubscriptionsController < ApiController
 		subscription = Api::Subscribtion.find(params[:id])
 
 		if subscription.present?
-			subscription.update!(subscription_params)
+			if current_user.id == subscription.subscriber_id
+				subscription.update!(subscription_params)
 
-			render json: { message: "Subscribed" }, status: :ok
+				render json: subscription, status: :ok
+			else
+				render nothing: true, status: :not_found
+			end
 		else
 			render nothing: true, status: :not_found
 		end
