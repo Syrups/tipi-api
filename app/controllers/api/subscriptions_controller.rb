@@ -1,6 +1,7 @@
 class Api::SubscriptionsController < ApiController
 	before_filter :authenticate_request
 
+	api!
 	def create
 		begin
 			user = Api::User.find(params[:user_id])
@@ -12,6 +13,7 @@ class Api::SubscriptionsController < ApiController
 		end
 	end
 
+	api!
 	def update
 		begin
 			subscription = Api::Subscribtion.find(params[:id])
@@ -23,12 +25,13 @@ class Api::SubscriptionsController < ApiController
 			else
 				render nothing: true, status: :not_found
 			end
-			
+
 		rescue ActiveRecord::RecordNotFound => e
 			render nothing: true, status: :not_found
 		end
 	end
 
+	
 	private
 		def subscription_params
 			params.require(:subscription).permit(:active)
