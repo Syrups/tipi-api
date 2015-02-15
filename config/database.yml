@@ -17,7 +17,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: fables
+  database: fables_test
   pool: 5
   username: postgres
   password: postgres
