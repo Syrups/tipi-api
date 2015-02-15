@@ -5,13 +5,11 @@ class Api::StoriesController < ApiController
 	def create
 		story = story_params
 
-		@user = Api::User.find story[:user_id]
+		#@user = Api::User.find story[:user_id]
 
 		#if @user.present?
 	  	 	#render nothing: true, status: :conflict 
 	 	#else
-
-	 	
 
 		@story = Api::Story.new(user_id: story[:user_id], title: story[:title])
 
@@ -26,7 +24,7 @@ class Api::StoriesController < ApiController
 	def story_params
 
 		puts params
-		
+
 		params.require(:story).permit(:user_id, :title)
     end
 end

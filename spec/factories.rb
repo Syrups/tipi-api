@@ -5,8 +5,15 @@ FactoryGirl.define do
 		password 'toto13'
 	end
 
+
 	factory :story, class: Api::Story do
 		user_id 'leoht'
 		title 'jkhsdhfshdfsd786768687dsfsdf'
+	end
+	
+	factory :another_user, class: Api::User do
+		username 'glenn'
+		token 'KJHQSHKLFJQHSFHqjhsfkjhqsjfk'
+		password 'google'
 	end
 end

@@ -13,7 +13,7 @@ describe 'Story API' do
 				}
 			}.to_json
 
-			post api("/users/#{glenn.id}/stories"), story_params, headers
+			post api("/users/#{glenn.id}/stories"), story_params, api_headers(token: glenn.token)
 
 			expect(response.status).to eq 201
 			expect(Api::Story.first.title).to eq 'costa rica !'
@@ -21,9 +21,8 @@ describe 'Story API' do
 			s = Api::Story.first
 
 			s.receivers << leo;
-			s.reload!
 			
-			leo.reload!
+			#leo.reload!
 
 			expect(s.receivers.count).to eq 1		
 		end
