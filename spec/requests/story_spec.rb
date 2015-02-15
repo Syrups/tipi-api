@@ -4,7 +4,7 @@ describe 'Story API' do
 	describe 'POST /users/:id/stories' do
 		it 'should create a story' do
 			glenn = FactoryGirl.create :user
-			leo = FactoryGirl.create :user
+			leo = FactoryGirl.create :user, username: "leo"
 
 			story_params = {
 				:story => {
@@ -22,9 +22,8 @@ describe 'Story API' do
 
 			s.receivers << leo;
 			
-			#leo.reload!
-
-			expect(s.receivers.count).to eq 1		
+			expect(s.receivers.count).to eq 1	
+			expect(s.receivers.first.username).to eq "leo"	
 		end
 	end
 
