@@ -19,31 +19,44 @@ describe 'Story API' do
 			expect(Api::Story.first.title).to eq 'costa rica !'
 
 			s = Api::Story.first
-
 			s.receivers << leo;
-			
+
 			expect(s.receivers.count).to eq 1	
 			expect(s.receivers.first.username).to eq "leo"	
 		end
 	end
 
 	describe 'GET /stories/:id' do
-		it 'should return the story requested by the user if has acces to it' do
+		it 'should return the story requested by the owner' do
 
-			leo = FactoryGirl.create :user
-			glenn = FactoryGirl.create :user
+			glenn = FactoryGirl.create :user, username: "glenn"
+			leo = FactoryGirl.create :user, username: "leo"
+			olly = FactoryGirl.create :user, username: "olly"
+			thib = FactoryGirl.create :user, username: "thib"
 
 			s = FactoryGirl.create :story, user_id:leo.id
-			#s = Api::Story.find s.id
-			#s.receivers << leo;
+			s.receivers << glenn;
+			s.receivers << olly
 
 			get api("/stories/#{s.id}"), {}, api_headers(token: leo.token)
 
-			puts response.body
+			sj = JSON.parse(response.body)
+
 			expect(response.status).to eq 200
-			#expect(response.body.user_id).to eq leo.id
-			#expect(response.body.count).to eq 1	
+			expect(sj['user_id']).to eq leo.id
+			expect(sj['receivers'].length).to eq 2	
+
+			#get api("/stories/#{s.id}"), {}, api_headers(token: glenn.token)
+
+			#puts JSON.parse(response.body)
+
+			#expect(response.status).to eq 200
+
+			#expect(sj['user_id']).to eq leo.id
+			#expect(sj['receivers'].length).to eq 2
 		end
+
+		#it 'should return the story requested by the one of the receivers' 
 	end
 
 	describe 'DELETE /stories/:id' do
