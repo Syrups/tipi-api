@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   scope '/api' do
     scope '/v1' do
 
-      get '/authenticate', to: 'api#authenticate'
+      post '/authenticate', to: 'api#authenticate'
 
       resources :users, module: :api, except: [:index, :new, :edit] do
         resources :stories, shallow: true, except: [:index, :new, :edit] do

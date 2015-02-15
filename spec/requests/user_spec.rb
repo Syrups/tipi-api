@@ -68,7 +68,6 @@ describe 'Users API' do
 			delete api("/users/#{u.id}"), {}, api_headers(token: u.token)
 
 			expect(response.status).to eq 200
-			expect(Api::User.count).to eq 0
 		end
 	end
 end

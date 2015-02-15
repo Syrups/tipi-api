@@ -3,7 +3,19 @@ class ApiController < ApplicationController
   VERSION = 1
 
   def authenticate
-  	render nothing: true, :status => :bad_request unless params[:user].present? and params[:signature].present?
+    user = Api::User.find_by_username params[:username]
+
+    if user.present?
+      credentials_password = Security.hash_password(params[:password], user.salt)
+
+      if ::Devise.secure_compare(user.password, credentials_password)
+        render json: user, status: 200
+      else
+        render nothing: true, status: 404
+      end
+    else
+      render nothing: true, status: 404
+    end
   end
 
   private

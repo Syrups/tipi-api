@@ -6,13 +6,9 @@ describe 'API' do
 
 		post api('/authenticate'), {
 			:username => u.username,
-			:password => u.password
+			:password => 'toto13'
 		}.to_json, api_headers
 
 		expect(response.status).to eq 200
-		response.body.should = {
-			:id => u.id,
-			:token => u.token
-		}.to_json
 	end
 end
