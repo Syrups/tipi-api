@@ -7,14 +7,16 @@ class ApiController < ApplicationController
   private
 
   def authenticate_request
-  	if not params[:token].present?
-  		render json: 'No token provided', status: :unauthorized
+  	if not request.headers['X-Authorization-Token'].present?
+  		render :json => { message: 'No token provided' }, :status => :unauthorized
+      return
   	end
 
-  	@current_user = Api::User.find_by_token(params[:token])
+  	@current_user = Api::User.find_by_token(request.headers['X-Authorization-Token'])
 
   	if @current_user.nil?
-  		render json: 'Bad token', status: :unauthorized
+  		render :json => { message: 'Bad token' }, :status => :unauthorized
+      return
   	end
   end
 

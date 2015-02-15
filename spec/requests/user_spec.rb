@@ -21,9 +21,12 @@ describe 'Users API' do
 
 	describe 'GET /users/:id' do
 		it 'should respond json for user' do
-			u = FactoryGirl.create :user, username: 'leoht'
+			u = FactoryGirl.create :user, username: 'leoht', token: 'a23b687TYQfsdfsdf'
 
-			get "/users/#{u.id}", {}, {'Accept' => 'application/json'}
+			get "/api/v1/users/#{u.id}", {}, {
+				'Accept' => 'application/json',
+				'X-Authorization-Token' => 'a23b687TYQfsdfsdf'
+			}
 
 			expect(response.status).to eq 200
 			expect(Api::User.first.username).to eq 'leoht'
