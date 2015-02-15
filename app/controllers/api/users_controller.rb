@@ -6,7 +6,7 @@ class Api::UsersController < ApiController
   # except user creation
   before_filter :authenticate_request, except: :create
 
-  before_filter :find_user, only: [:show, :update, :destroy]
+  before_filter :find_user, except: :create
 
   api!
   def create

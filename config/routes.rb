@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+
   apipie
   # Api scoping and versioning
   scope '/api' do
