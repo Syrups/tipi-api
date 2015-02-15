@@ -27,8 +27,28 @@ describe 'Story API' do
 	end
 
 	describe 'GET /stories/:id' do
+
+
 		it 'should return the story requested by the owner' do
 
+			leo = FactoryGirl.create :user, username: "leo"
+			glenn = FactoryGirl.create :user, username: "glenn"
+			
+			olly = FactoryGirl.create :user, username: "olly"
+			thib = FactoryGirl.create :user, username: "thib"
+
+			s = FactoryGirl.create :story, user_id:leo.id
+			
+			get api("/stories/#{s.id}"), {}, api_headers(token: leo.token)
+
+			sj = JSON.parse(response.body)
+
+			expect(response.status).to eq 200
+			expect(sj['user_id']).to eq leo.id
+			
+		end
+
+		it 'should return the story requested by the receiver' do
 			glenn = FactoryGirl.create :user, username: "glenn"
 			leo = FactoryGirl.create :user, username: "leo"
 			olly = FactoryGirl.create :user, username: "olly"
@@ -38,25 +58,26 @@ describe 'Story API' do
 			s.receivers << glenn;
 			s.receivers << olly
 
-			get api("/stories/#{s.id}"), {}, api_headers(token: leo.token)
+			get api("/stories/#{s.id}"), {}, api_headers(token: olly.token)
 
 			sj = JSON.parse(response.body)
 
 			expect(response.status).to eq 200
-			expect(sj['user_id']).to eq leo.id
 			expect(sj['receivers'].length).to eq 2	
-
-			#get api("/stories/#{s.id}"), {}, api_headers(token: glenn.token)
-
-			#puts JSON.parse(response.body)
-
-			#expect(response.status).to eq 200
-
-			#expect(sj['user_id']).to eq leo.id
-			#expect(sj['receivers'].length).to eq 2
 		end
 
-		#it 'should return the story requested by the one of the receivers' 
+
+		it 'should return response status 401 unauthorized' do
+
+			thib = FactoryGirl.create :user, username: "thib"
+			glenn = FactoryGirl.create :user, username: "glenn"
+			
+			s = FactoryGirl.create :story, user_id:glenn.id
+			
+			get api("/stories/#{s.id}"), {}, api_headers(token: thib.token)
+
+			expect(response.status).to eq 401
+		end
 	end
 
 	describe 'DELETE /stories/:id' do

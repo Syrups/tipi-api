@@ -28,16 +28,14 @@ class Api::StoriesController < ApiController
 	def show
 
 		@story = Api::Story.find params[:id]
-
-		puts "Hello #{@current_user.username} #{@current_user.id} : #{@story.user_id}!"
-
+		
 		if @current_user.id == @story.user_id
 			render json: @story
 		else
 			if @story.receivers.include?(@current_user)
 				render :json => @story.to_json(:include => :receivers) 
 			else
-				render nothing: true, status: :bad_request
+				render nothing: true, status: :unauthorized
 			end
 		end
 	end
