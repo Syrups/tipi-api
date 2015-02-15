@@ -13,7 +13,7 @@ describe 'Users API' do
 
 			headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
 
-			post '/api/v1/users', user_params, headers
+			post api('/users'), user_params, headers
 
 			expect(response.status).to eq 201
 			expect(Api::User.first.username).to eq 'leoht'
@@ -55,11 +55,29 @@ describe 'Users API' do
 		it 'should update user' do
 			u = FactoryGirl.create :user
 
-			# put "/api/v1/users/#{u.id}", { }
+			headers = {
+				'Accept' => 'application/json',
+				'X-Authorization-Token' => u.token
+			}
+
+			put "/api/v1/users/#{u.id}", { :user => { :password => 'blabla' } }, headers
+
+			expect(response.status).to eq 200
+			expect(Api::User.first.password).to eq 'blabla'
 		end
 	end
 
 	describe 'DELETE /users/:id' do
-		it 'should delete user' 
+		it 'should delete user' do
+			u = FactoryGirl.create :user
+
+			delete "/api/v1/users/#{u.id}", {}, headers = {
+				'Accept' => 'application/json',
+				'X-Authorization-Token' => u.token
+			}
+
+			expect(response.status).to eq 200
+			expect(Api::User.count).to eq 0
+		end
 	end
 end

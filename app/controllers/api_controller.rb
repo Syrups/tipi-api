@@ -1,5 +1,7 @@
 class ApiController < ApplicationController
 
+  VERSION = 1
+
   def authenticate
   	render nothing: true, :status => :bad_request unless params[:user].present? and params[:signature].present?
   end

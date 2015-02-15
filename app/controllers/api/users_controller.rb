@@ -36,7 +36,7 @@ class Api::UsersController < ApiController
   
   api!
   def update
-    @user.update(user_params).save!
+    @user.update!(user_params)
 
     render json: @user
   end
@@ -45,7 +45,7 @@ class Api::UsersController < ApiController
   def destroy
     @user.destroy!
 
-    render status: 200
+    render json: { message: 'User destroyed' }, status: 200
   end
 
   private
