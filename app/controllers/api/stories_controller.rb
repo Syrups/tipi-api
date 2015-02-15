@@ -3,6 +3,7 @@ require 'securerandom'
 class Api::StoriesController < ApiController
 
 	before_filter :authenticate_request
+	#except: :show
 
 	api!
 	def create
@@ -21,6 +22,19 @@ class Api::StoriesController < ApiController
 		else
 			render nothing: true, status: :bad_request
 		end
+	end
+
+	api!
+	def show
+
+		@story = Api::Story.find params[:id]
+
+		if @current_user.id == @story.user_id
+			render json: @story
+		else
+			render nothing: true, status: :bad_request
+		end
+		
 	end
 
 	def story_params

@@ -28,7 +28,22 @@ describe 'Story API' do
 	end
 
 	describe 'GET /stories/:id' do
-		it 'should return the story requested by the user if has acces to it'
+		it 'should return the story requested by the user if has acces to it' do
+
+			leo = FactoryGirl.create :user
+			glenn = FactoryGirl.create :user
+
+			s = FactoryGirl.create :story, user_id:leo.id
+			#s = Api::Story.find s.id
+			#s.receivers << leo;
+
+			get api("/stories/#{s.id}"), {}, api_headers(token: leo.token)
+
+			puts response.body
+			expect(response.status).to eq 200
+			#expect(response.body.user_id).to eq leo.id
+			#expect(response.body.count).to eq 1	
+		end
 	end
 
 	describe 'DELETE /stories/:id' do
