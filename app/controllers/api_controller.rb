@@ -25,12 +25,12 @@ class ApiController < ApplicationController
 
   	if not request_token.present?
   		render :json => { message: 'No token provided' }, :status => :unauthorized
-  	end
+    else
+      @current_user = Api::User.find_by_token request_token
 
-  	@current_user = Api::User.find_by_token request_token
-
-  	if @current_user.nil?
-  		render :json => { message: 'Bad token' }, :status => :unauthorized
+      if @current_user.nil?
+        render :json => { message: 'Bad token' }, :status => :unauthorized
+      end
   	end
   end
 

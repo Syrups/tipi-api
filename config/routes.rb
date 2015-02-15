@@ -15,6 +15,11 @@ Rails.application.routes.draw do
             resource :audio,  shallow: true, except: [:index, :new, :edit]
           end
         end
+
+        resources :subscriptions, shallow: true, only: [:index, :create, :update]
+
+        get '/subscribed', on: :member, to: 'users#subscribed'
+        get '/subscribers', on: :member, to: 'users#subscribers'
       end
 
     end
