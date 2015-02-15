@@ -1,8 +1,9 @@
 FactoryGirl.define do
 	factory :user, class: Api::User do
 		username 'leoht'
-		token 'jkhsdhfshdfsd786768687dsfsdf'
-		password 'toto13'
+		salt { SecureRandom.hex }
+		password { Security.hash_password('toto13', salt) }
+		token { Security.generate_token('leoht') }
 	end
 
 	factory :another_user, class: Api::User do

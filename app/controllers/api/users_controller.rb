@@ -17,9 +17,10 @@ class Api::UsersController < ApiController
   	  render nothing: true, status: :conflict 
   	else
     	salt = SecureRandom.hex
-    	password = hash_password(user[:password], salt)
+    	password = Security.hash_password(user[:password], salt)
+      token = Security.generate_token(user[:username])
 
-    	@user = Api::User.new(username: user[:username], password: password, salt: salt)
+    	@user = Api::User.new(username: user[:username], password: password, salt: salt, token: token)
 
     	if @user.save
     	  render json: @user, status: :created
@@ -57,8 +58,4 @@ class Api::UsersController < ApiController
     def user_params
       params.require(:user).permit(:username, :password)
     end
-
-  	def hash_password(plain, salt)
-  	  Digest::SHA2.new(512).digest(plain + ':' + salt).hex
-  	end
 end
