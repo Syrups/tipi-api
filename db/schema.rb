@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150215230348) do
+ActiveRecord::Schema.define(version: 20150216103616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "api_audios", force: :cascade do |t|
+    t.string   "file"
+    t.integer  "duration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "api_comments", force: :cascade do |t|
+    t.integer  "page_id"
+    t.integer  "audio_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "api_pages", force: :cascade do |t|
     t.float    "duration"
@@ -60,7 +74,7 @@ ActiveRecord::Schema.define(version: 20150215230348) do
     t.datetime "last_request"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
-    t.string   "account_type",         default: "basic"
+    t.string   "account_type", default: "basic"
   end
 
 end

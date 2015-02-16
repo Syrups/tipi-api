@@ -19,4 +19,13 @@ describe Api::User do
 		expect(@glenn.subscribed.length).to eq 1
 		expect(@leo.subscribers.length).to eq 1
 	end
+
+	it 'should have access to story' do
+		@story = @leo.stories.create(title: 'My story')
+
+		@story.receivers << @glenn
+
+		expect(@leo.can_access(@story)).to eq true
+		expect(@glenn.can_access(@story)).to eq true
+	end
 end

@@ -3,7 +3,7 @@ class CreateApiPages < ActiveRecord::Migration
     create_table :api_pages do |t|
       t.float :duration
       t.integer :position
-      t.boolean :has_only_sound
+      t.boolean :has_only_sound, default: false
       t.integer :story_id
 
       t.timestamps null: false

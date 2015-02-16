@@ -13,6 +13,7 @@ Rails.application.routes.draw do
           resources :pages,  shallow: true, except: [:index, :new, :edit] do
             resource :media,  shallow: true, except: [:index, :new, :edit]
             resource :audio,  shallow: true, except: [:index, :new, :edit]
+            resources :comments, shallow: true, expect: [:new, :edit]
           end
         end
 
