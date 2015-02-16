@@ -1,11 +1,4 @@
-FactoryGirl.define do  factory :api_audio, :class => 'Api::Audio' do
-    file "MyString"
-duration 1
-  end
-  factory :api_comment, :class => 'Api::Comment' do
-    page_id ""
-audio_id ""
-  end
+FactoryGirl.define do
 
 	factory :user, class: Api::User do
 		username 'leoht'
@@ -33,6 +26,9 @@ audio_id ""
 				FactoryGirl.create(:page, story_id: story.id)
 			end
 		end
+	end
+
+	factory :comment, class: Api::Comment do
 	end
 
 	factory :another_user, class: Api::User do

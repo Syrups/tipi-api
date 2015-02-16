@@ -8,6 +8,7 @@ class Api::User < ActiveRecord::Base
 	has_many :inverse_invitations, -> { where "active = false" }, class_name: 'Api::Subscribtion', foreign_key: 'user_id'
 	has_many :invitees, through: :inverse_invitations, :source => :subscriber
 	has_many :stories
+	has_many :comments
 
 	scope :public_people, -> { where "account_type = public" }
 
