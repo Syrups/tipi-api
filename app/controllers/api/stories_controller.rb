@@ -51,7 +51,6 @@ class Api::StoriesController < ApiController
 
 	api!
 	def update
-
 		if @story.is_owner? current_user
 			@story.update!(story_params)
 			render json: @story

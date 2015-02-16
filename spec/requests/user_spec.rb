@@ -74,6 +74,25 @@ describe 'Users API' do
 			expect(response.status).to eq 200
 			expect(Api::User.first.password).to eq 'blabla'
 		end
+
+		it 'should update user audio' do
+			u = FactoryGirl.create :user
+
+			user_params = {
+				:user => {
+					:audio => {
+						:file => 'bio.m4a'
+					}
+				}
+			}.to_json 
+
+			put api("/users/#{u.id}"), user_params, api_headers(token: u.token)
+
+			u.reload
+
+			expect(response.status).to eq 200
+			expect(u.audio).to be_present
+		end
 	end
 
 	describe 'DELETE /users/:id' do
@@ -83,6 +102,18 @@ describe 'Users API' do
 			delete api("/users/#{u.id}"), {}, api_headers(token: u.token)
 
 			expect(response.status).to eq 200
+		end
+
+		it 'should not delete another user' do
+			leo = FactoryGirl.create :user
+			glenn = FactoryGirl.create :another_user
+
+			delete api("/users/#{leo.id}"), {}, api_headers(token: glenn.token)
+
+			leo.reload
+
+			expect(response.status).to eq 404
+			expect(leo).to be_present
 		end
 	end
 end

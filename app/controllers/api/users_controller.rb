@@ -18,8 +18,8 @@ class Api::UsersController < ApiController
   	  render nothing: true, status: :conflict 
   	else
     	salt = SecureRandom.hex
-    	password = Security.hash_password(user[:password], salt)
-      token = Security.generate_token(user[:username])
+    	password = ::Security.hash_password(user[:password], salt)
+      token = ::Security.generate_token(user[:username])
 
     	@user = Api::User.new(username: user[:username], password: password, salt: salt, token: token)
 
@@ -33,7 +33,7 @@ class Api::UsersController < ApiController
 
   api!
   def show
-    render json: @user
+    render json: @user.to_json(:include => [:audio, :stories] )
   end
 
   api!
@@ -45,6 +45,10 @@ class Api::UsersController < ApiController
   api!
   def update
     @user.update!(user_params)
+
+    if params[:user][:audio].present?
+      audio = @user.create_audio(audio_params)
+    end
 
     render json: @user
   end
@@ -72,8 +76,7 @@ class Api::UsersController < ApiController
 
   api!
   def created
-
-    @stories = Api::Story.where(user_id: @user.id)
+    @stories = current_user.stories
    
     render json: @stories, status: :ok
   end
@@ -88,16 +91,15 @@ class Api::UsersController < ApiController
   	def find_user
 
       begin
-
-        @user = Api::User.find params[:id]
-
+        @user = Api::User.includes(:stories).find params[:id]
       rescue ActiveRecord::RecordNotFound
-
-        @user = Api::User.find params[:user_id]
-
-      rescue ActiveRecord::RecordNotFound
-        render nothing: true, status: :not_found
-
+        if params[:user_id].present?
+          begin
+            @user = Api::User.includes(:stories).find params[:user_id]
+          rescue ActiveRecord::RecordNotFound
+            render nothing: true, status: :not_found
+          end
+        end
       end
   	end
 
@@ -112,6 +114,10 @@ class Api::UsersController < ApiController
     end
 
     def user_params
-      params.require(:user).permit(:username, :password, :type)
+      params.require(:user).permit(:username, :password, :account_type, :audio)
+    end
+
+    def audio_params
+      params.require(:user).require(:audio).permit(:file)
     end
 end

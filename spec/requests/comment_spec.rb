@@ -41,6 +41,14 @@ describe 'Comments API' do
 			expect(response.status).to eq 404
 			expect(@page.comments.length).to eq 0
 		end
+
+		it 'should reject request without audio' do
+			post api("/pages/#{@page.id}/comments"), {
+				:comment => {}
+			}.to_json, api_headers(token: @leo.token)
+
+			expect(response.status).to eq 400
+		end
 	end
 
 	describe 'GET /comments/:id' do
