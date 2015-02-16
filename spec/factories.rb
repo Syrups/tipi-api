@@ -4,7 +4,7 @@ FactoryGirl.define do
 		username 'leoht'
 		salt { SecureRandom.hex }
 		password { Security.hash_password('toto13', salt) }
-		token { Security.generate_token('leoht') }
+		token { Security.generate_token(username) }
 	end
 
 	factory :page, class: Api::Page do

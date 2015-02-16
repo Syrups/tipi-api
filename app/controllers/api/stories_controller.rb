@@ -50,7 +50,6 @@ class Api::StoriesController < ApiController
 
 	api!
 	def update
-
 		@story.update!(story_params)
 
 		render json: @story

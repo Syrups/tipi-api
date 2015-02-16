@@ -1,25 +1,43 @@
 require 'rails_helper'
 
 describe 'Story API' do
+
+	before :each do |example|
+
+		@leo = FactoryGirl.create :user, username: "leo"
+		@glenn = FactoryGirl.create :user, username: "glenn"
+		@olly = FactoryGirl.create :user, username: "olly"
+		@thib = FactoryGirl.create :user, username: "thib"
+
+	    unless example.metadata[:skip_before]
+			@story = FactoryGirl.create :story, user_id:@glenn.id, :title => 'Go in spain!'
+			@leoStory = FactoryGirl.create :story, user_id:@leo.id
+			#@page = FactoryGirl.create :page
+			#@story.pages << @page
+			#story.receivers << @leo
+	    end
+	end
+	
+
 	describe 'POST /users/:id/stories' do
-		it 'should create a story' do
-			glenn = FactoryGirl.create :user
-			leo = FactoryGirl.create :user, username: "leo"
+		it 'should create a story' , skip_before: true do
 
 			story_params = {
 				:story => {
-					:user_id => glenn.id,
+					:user_id => @glenn.id,
 					:title => 'costa rica !'
 				}
 			}.to_json
 
-			post api("/users/#{glenn.id}/stories"), story_params, api_headers(token: glenn.token)
+			post api("/users/#{@glenn.id}/stories"), story_params, api_headers(token: @glenn.token)
 
 			expect(response.status).to eq 201
-			expect(Api::Story.first.title).to eq 'costa rica !'
+
+			sj = JSON.parse(response.body)
+			expect(sj['title']).to eq 'costa rica !'
 
 			s = Api::Story.first
-			s.receivers << leo;
+			s.receivers << @leo;
 
 			expect(s.receivers.count).to eq 1	
 			expect(s.receivers.first.username).to eq "leo"	
@@ -28,76 +46,61 @@ describe 'Story API' do
 
 	describe 'GET /stories/:id' do
 
-
 		it 'should return the story requested by the owner' do
 
-			leo = FactoryGirl.create :user, username: "leo"
-			glenn = FactoryGirl.create :user, username: "glenn"
+			s = FactoryGirl.create :story, user_id:@leo.id
 			
-			olly = FactoryGirl.create :user, username: "olly"
-			thib = FactoryGirl.create :user, username: "thib"
+			get api("/stories/#{s.id}"), {}, api_headers(token: @leo.token)
 
-			s = FactoryGirl.create :story, user_id:leo.id
-			
-			get api("/stories/#{s.id}"), {}, api_headers(token: leo.token)
+			expect(response.status).to eq 200
 
 			sj = JSON.parse(response.body)
 
-			expect(response.status).to eq 200
-			expect(sj['user_id']).to eq leo.id
-			
+			expect(sj['user_id']).to eq @leo.id
 		end
 
 		it 'should return the story requested by the receiver' do
-			glenn = FactoryGirl.create :user, username: "glenn"
-			leo = FactoryGirl.create :user, username: "leo"
-			olly = FactoryGirl.create :user, username: "olly"
-			thib = FactoryGirl.create :user, username: "thib"
 
-			s = FactoryGirl.create :story, user_id:leo.id
-			s.receivers << glenn;
-			s.receivers << olly
+			@leoStory.receivers << @glenn;
+			@leoStory.receivers << @olly
 
-			get api("/stories/#{s.id}"), {}, api_headers(token: olly.token)
+			get api("/stories/#{@leoStory.id}"), {}, api_headers(token: @olly.token)
 
-			sj = JSON.parse(response.body)
+			s = Api::Story.find @leoStory.id
 
 			expect(response.status).to eq 200
-			expect(sj['receivers'].length).to eq 2	
+			expect(s.receivers.length).to eq 2	
 		end
 
 
 		it 'should return response status 401 unauthorized' do
 
-			thib = FactoryGirl.create :user, username: "thib"
-			glenn = FactoryGirl.create :user, username: "glenn"
+			@thib = FactoryGirl.create :user, username: "thib"
+			@glenn = FactoryGirl.create :user, username: "glenn"
 			
-			s = FactoryGirl.create :story, user_id:glenn.id
+			s = FactoryGirl.create :story, user_id:@glenn.id
 			
-			get api("/stories/#{s.id}"), {}, api_headers(token: thib.token)
+			get api("/stories/#{s.id}"), {}, api_headers(token: @thib.token)
 
 			expect(response.status).to eq 401
 		end
 	end
 
 	describe 'DELETE /stories/:id' do
-		it 'should delte the story requested by the user if has acces to it' do
+		it 'should delete the story requested by the user if has acces to it' do
 
-			glenn = FactoryGirl.create :user, username: "glenn"
-			s = FactoryGirl.create :story, user_id:glenn.id
+			s = FactoryGirl.create :story, user_id:@glenn.id
 
-			delete api("/stories/#{s.id}"), {}, api_headers(token: glenn.token)
+			delete api("/stories/#{s.id}"), {}, api_headers(token: @glenn.token)
 
 			expect(response.status).to eq 200
 		end
 
 		it 'should not delete the story and return 404' do
 
-			thib = FactoryGirl.create :user, username: "thib"
-			glenn = FactoryGirl.create :user, username: "glenn"
-			s = FactoryGirl.create :story, user_id:glenn.id
+			s = FactoryGirl.create :story, user_id:@glenn.id
 
-			delete api("/stories/#{s.id}"), {}, api_headers(token: thib.token)
+			delete api("/stories/#{s.id}"), {}, api_headers(token: @thib.token)
 
 			expect(response.status).to eq 404
 		end
@@ -105,23 +108,19 @@ describe 'Story API' do
 
 	describe 'PUT /stories/:id' do
 		it 'should update the story requested by the user if has acces to it' do
-			#thib = FactoryGirl.create :user, username: "thib"
-			glenn = FactoryGirl.create :user, username: "glenn"
-
-			s = FactoryGirl.create :story, user_id:glenn.id, :title => 'Go in spain!'
-		
+			
 			story_params = {
 				:story => {
 					:title => 'Go latina !'
 				}
 			}.to_json
 
-			put api("/stories/#{s.id}"), story_params, api_headers(token: glenn.token)
+			put api("/stories/#{@story.id}"), story_params, api_headers(token: @glenn.token)
 
 			expect(response.status).to eq 200
 
-			sj = JSON.parse(response.body)
-			expect(sj['title']).to eq 'Go latina !'
+			@story.reload
+			expect(@story.title).to eq 'Go latina !'
 			
 		end
 	end
