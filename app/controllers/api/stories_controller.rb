@@ -13,7 +13,6 @@ class Api::StoriesController < ApiController
 		if @user.id == current_user.id
 			@story = Api::Story.new(user_id: story[:user_id], title: story[:title])
 
-			#&& story.pages.is_a? Integer
 			if(story.has_key?(:page_number))
 				page_number = Integer(story[:page_number])
 				page_number.times do |i|
@@ -68,7 +67,6 @@ class Api::StoriesController < ApiController
 	end
 
 	private
-
 		def find_story
 			begin
 				@story = Api::Story.find params[:id]
