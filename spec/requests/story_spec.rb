@@ -97,6 +97,8 @@ describe 'Story API' do
 			glenn = FactoryGirl.create :user, username: "glenn"
 			s = FactoryGirl.create :story, user_id:glenn.id
 
+			s.receivers << thib # Even a receiver should not be allowed to delete, ONLY the owner
+
 			delete api("/stories/#{s.id}"), {}, api_headers(token: thib.token)
 
 			expect(response.status).to eq 404
@@ -120,9 +122,33 @@ describe 'Story API' do
 
 			expect(response.status).to eq 200
 
+			s.reload
+
 			sj = JSON.parse(response.body)
 			expect(sj['title']).to eq 'Go latina !'
-			
+			expect(s.title).to eq 'Go latina !'
+		end
+
+		it 'should not update the story' do
+			thib = FactoryGirl.create :user, username: "thib"
+			glenn = FactoryGirl.create :user, username: "glenn"
+			s = FactoryGirl.create :story, user_id:glenn.id
+			title = s.title
+
+			s.receivers << thib # Even a receiver should not be allowed to update, ONLY the owner
+
+			story_params = {
+				:story => {
+					:title => 'Go latina !'
+				}
+			}.to_json
+
+			put api("/stories/#{s.id}"), story_params, api_headers(token: thib.token)
+
+			s.reload
+
+			expect(response.status).to eq 404
+			expect(s.title).to eq title
 		end
 	end
 

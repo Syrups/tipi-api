@@ -41,20 +41,22 @@ class Api::StoriesController < ApiController
 
 	api!
 	def destroy
-		render nothing: true, status: 404 unless @story.is_owner? current_user
-		
-		@story.destroy!
-
-		render json: { message: 'Story destroyed' }, status: 200
+		if @story.is_owner? current_user  
+			@story.destroy!
+			render json: { message: 'Story destroyed' }, status: 200
+		else
+			render nothing: true, status: 404
+		end
 	end
 
 	api!
 	def update
-		render nothing: true, status: 404 unless @story.is_owner? current_user
-
-		@story.update!(story_params)
-
-		render json: @story
+		if @story.is_owner? current_user
+			@story.update!(story_params)
+			render json: @story
+		else
+			render nothing: true, status: 404
+		end
 	end
 
 	private

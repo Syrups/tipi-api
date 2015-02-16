@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
       post '/authenticate', to: 'api#authenticate'
 
-      resources :users, module: :api, except: [:index, :new, :edit] do
+      resources :users, module: :api, except: [:index, :new, :edit], contraints: { id: /^[0-9]+$/} do
         resources :stories, shallow: true, except: [:index, :new, :edit] do
           resources :pages,  shallow: true, except: [:index, :new, :edit] do
             resource :media,  shallow: true, except: [:index, :new, :edit]
@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
         resources :subscriptions, shallow: true, only: [:index, :create, :update]
 
+        get 'search', on: :collection, to: 'users#search'
         get '/subscribed', on: :member, to: 'users#subscribed'
         get '/subscribers', on: :member, to: 'users#subscribers'
         get '/invitations', on: :member, to: 'users#invitations'

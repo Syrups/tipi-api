@@ -23,4 +23,12 @@ class Api::User < ActiveRecord::Base
 	def can_access?(story)
 		story.receivers.include? self or story.user.id == id
 	end
+
+	def is_public?
+		account_type == 'public'
+	end
+
+	def self.search(query)
+		where('username LIKE :username', username: query)
+	end
 end
