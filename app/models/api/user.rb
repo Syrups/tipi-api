@@ -23,7 +23,15 @@ class Api::User < ActiveRecord::Base
 		self.inverse_subscribtions.create(user_id: user.id, subscriber_id: id, active: 1)
 	end
 
-	def can_access(story)
-		story.receivers.include? self or story.user.id == self.id
+	def can_access?(story)
+		story.receivers.include? self or story.user.id == id
+	end
+
+	def is_public?
+		account_type == 'public'
+	end
+
+	def self.search(query)
+		where('username LIKE :username', username: query)
 	end
 end

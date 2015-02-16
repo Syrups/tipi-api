@@ -44,6 +44,21 @@ describe 'Users API' do
 		end
 	end
 
+	describe 'GET /users/search' do
+		it 'should find user' do
+			u = FactoryGirl.create :user
+
+			get api("/users/search"), {
+				:query => u.username
+			}, api_headers(token: u.token)
+
+			expected_response = [u].to_json
+
+			expect(response.status).to eq 200
+			expect(response.body).to eq expected_response
+		end
+	end
+
 	describe 'PUT /users/:id' do
 		it 'should update user' do
 			u = FactoryGirl.create :user

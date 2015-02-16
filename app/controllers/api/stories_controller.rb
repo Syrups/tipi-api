@@ -1,10 +1,8 @@
 require 'securerandom'
 
 class Api::StoriesController < ApiController
-
 	before_filter :authenticate_request
-	before_filter :find_story, except: [:create, :show]
-	#except: :show
+	before_filter :find_story, except: :create
 
 	api!
 	def create
@@ -43,27 +41,38 @@ class Api::StoriesController < ApiController
 
 	api!
 	def destroy
-		@story.destroy!
-
-		render json: { message: 'Story destroyed' }, status: 200
+		if @story.is_owner? current_user  
+			@story.destroy!
+			render json: { message: 'Story destroyed' }, status: 200
+		else
+			render nothing: true, status: 404
+		end
 	end
 
 	api!
 	def update
-		@story.update!(story_params)
 
-		render json: @story
+		if @story.is_owner? current_user
+			@story.update!(story_params)
+			render json: @story
+		else
+			render nothing: true, status: 404
+		end
 	end
 
 	private
-	def find_story
-		@story = Api::Story.find params[:id]
-		#puts "#{@story.inspect} for #{params[:id]}  #{@story.user_id} ==  #{current_user.id} "
-		#puts @story.inspect
-		render nothing: true, status: :not_found unless @story.present? and @story.user_id == current_user.id
-	end
 
-	def story_params
-		params.require(:story).permit(:user_id, :title)
-	end
+		def find_story
+			begin
+				@story = Api::Story.find params[:id]
+			rescue ActiveRecord::RecordNotFound
+				render nothing: true, status: :not_found
+			end
+
+			render nothing: true, status: :not_found unless current_user.can_access? @story
+		end
+
+		def story_params
+			params.require(:story).permit(:user_id, :title)
+		end
 end

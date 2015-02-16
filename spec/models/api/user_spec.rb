@@ -25,7 +25,7 @@ describe Api::User do
 
 		@story.receivers << @glenn
 
-		expect(@leo.can_access(@story)).to eq true
-		expect(@glenn.can_access(@story)).to eq true
+		expect(@leo.can_access?(@story)).to eq true
+		expect(@glenn.can_access?(@story)).to eq true
 	end
 end

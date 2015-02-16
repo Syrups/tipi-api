@@ -5,8 +5,8 @@ class Api::UsersController < ApiController
   # Verify request authentication for all endpoints
   # except user creation
   before_filter :authenticate_request, except: :create
-  before_filter :find_user, except: :create
-  before_filter :check_access, except: [:create, :show]
+  before_filter :find_user, except: [:create, :search]
+  before_filter :check_access, except: [:create, :show, :search]
 
   api!
   def create
@@ -34,6 +34,12 @@ class Api::UsersController < ApiController
   api!
   def show
     render json: @user
+  end
+
+  api!
+  def search
+    results = Api::User.search params[:query]
+    render json: results
   end
   
   api!
@@ -80,6 +86,7 @@ class Api::UsersController < ApiController
 
   private
   	def find_user
+
       begin
 
         @user = Api::User.find params[:id]
@@ -89,7 +96,8 @@ class Api::UsersController < ApiController
         @user = Api::User.find params[:user_id]
 
       rescue ActiveRecord::RecordNotFound
-        render nothing: true, status: :not_found unless @user.present? and @user.id == current_user.id
+        render nothing: true, status: :not_found
+
       end
   	end
 

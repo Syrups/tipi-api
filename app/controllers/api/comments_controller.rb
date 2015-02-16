@@ -1,8 +1,8 @@
 class Api::CommentsController < ApiController
 	before_filter :authenticate_request
-	before_filter :check_access
 	before_filter :find_page, only: [:index, :create]
 	before_filter :find_comment, only: [:show, :destroy]
+	before_filter :check_access
 
 	api!
 	def index
@@ -12,6 +12,7 @@ class Api::CommentsController < ApiController
 	api!
 	def create
 		@comment = @page.comments.create!(comment_params)
+		@comment.create_audio!(audio_params)
 
 		render json: @comment, status: :created
 	end
@@ -49,8 +50,7 @@ class Api::CommentsController < ApiController
 		def check_access
 			if params[:page_id].present?
 				begin
-					@page = Api::Page.find(params[:page_id])
-					if not @page.story.receivers.include? current_user
+					if not current_user.can_access? @page.story
 						render nothing: true, status: :not_found
 					end
 				rescue ActiveRecord::RecordNotFound
@@ -58,8 +58,7 @@ class Api::CommentsController < ApiController
 				end
 			else
 				begin
-					comment = Api::Comment.find(params[:id])
-					if not current_user.can_access comment.page.story
+					if not current_user.can_access? @comment.page.story
 						render nothing: true, status: :not_found
 					end
 				rescue ActiveRecord::RecordNotFound
@@ -69,6 +68,10 @@ class Api::CommentsController < ApiController
 		end
 
 		def comment_params
-			params.require(:comment).permit(:audio_id)
+			params.require(:comment).permit()
+		end
+
+		def audio_params
+			params.require(:comment).require(:audio).permit(:file)
 		end
 end

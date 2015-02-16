@@ -75,7 +75,7 @@ describe 'Story API' do
 		end
 
 
-		it 'should return response status 401 unauthorized' do
+		it 'should return response status not found' do
 
 			@thib = FactoryGirl.create :user, username: "thib"
 			@glenn = FactoryGirl.create :user, username: "glenn"
@@ -84,7 +84,7 @@ describe 'Story API' do
 			
 			get api("/stories/#{s.id}"), {}, api_headers(token: @thib.token)
 
-			expect(response.status).to eq 401
+			expect(response.status).to eq 404
 		end
 	end
 
@@ -106,17 +106,45 @@ describe 'Story API' do
 			
 		end
 
-		it 'should update the throw 404' do
+		# it 'should  throw 404' do
 			
+		# 	story_params = {
+		# 		:story => {
+		# 			:title => 'Go latina !'
+		# 		}
+		# 	}.to_json
+
+		# 	put api("/stories/#{@story.id}"), story_params, api_headers(token: @leo.token)
+
+		# 	expect(response.status).to eq 200
+
+		# 	s.reload
+
+		# 	sj = JSON.parse(response.body)
+		# 	expect(sj['title']).to eq 'Go latina !'
+		# 	expect(s.title).to eq 'Go latina !'
+		# end
+
+		it 'should not update the story' do
+			thib = FactoryGirl.create :user, username: "thib"
+			glenn = FactoryGirl.create :user, username: "glenn"
+			s = FactoryGirl.create :story, user_id:glenn.id
+			title = s.title
+
+			s.receivers << thib # Even a receiver should not be allowed to update, ONLY the owner
+
 			story_params = {
 				:story => {
 					:title => 'Go latina !'
 				}
 			}.to_json
 
-			put api("/stories/#{@story.id}"), story_params, api_headers(token: @leo.token)
+			put api("/stories/#{s.id}"), story_params, api_headers(token: thib.token)
 
-			expect(response.status).to eq 404			
+			s.reload
+
+			expect(response.status).to eq 404
+			expect(s.title).to eq title
 		end
 	end
 
@@ -142,7 +170,6 @@ describe 'Story API' do
 			get api("/users/#{@glenn.id}/stories/received"), {}, api_headers(token: @glenn.token)
 
 			stories = JSON.parse(response.body)
-			puts stories
 		end
 	end
 
@@ -160,7 +187,11 @@ describe 'Story API' do
 
 			s = FactoryGirl.create :story, user_id:@glenn.id
 
+			s.receivers << @thib # Even a receiver should not be allowed to delete, ONLY the owner
+
 			delete api("/stories/#{s.id}"), {}, api_headers(token: @thib.token)
+
+			expect(response.status).to eq 404
 
 			expect(response.status).to eq 404
 		end
