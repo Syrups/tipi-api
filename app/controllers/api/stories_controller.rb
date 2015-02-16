@@ -3,6 +3,7 @@ require 'securerandom'
 class Api::StoriesController < ApiController
 
 	before_filter :authenticate_request
+	before_filter :find_story, except: [:create, :show]
 	#except: :show
 
 	api!
@@ -38,6 +39,31 @@ class Api::StoriesController < ApiController
 				render nothing: true, status: :unauthorized
 			end
 		end
+	end
+
+	api!
+	def destroy
+		@story.destroy!
+
+		render json: { message: 'Story destroyed' }, status: 200
+	end
+
+	api!
+	def update
+
+		@story.update!(story_params)
+
+		render json: @story
+	end
+
+	private
+	def find_story
+
+
+		@story = Api::Story.find params[:id]
+		#puts "#{@story.inspect} for #{params[:id]}  #{@story.user_id} ==  #{current_user.id} "
+		#puts @story.inspect
+		render nothing: true, status: :not_found unless @story.present? and @story.user_id == current_user.id
 	end
 
 	def story_params

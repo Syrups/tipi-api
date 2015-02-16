@@ -52,7 +52,7 @@ describe 'Users API' do
 				:user => {
 					:password => 'blabla'
 				}
-			}.to_json
+			}.to_json 
 
 			put api("/users/#{u.id}"), user_params, api_headers(token: u.token)
 
