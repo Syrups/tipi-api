@@ -21,6 +21,6 @@ class Api::User < ActiveRecord::Base
 	end
 
 	def can_access(story)
-		story.receivers.include? self or story.user.id == self.id
+		story.receivers.include? self or story.user.id == id
 	end
 end

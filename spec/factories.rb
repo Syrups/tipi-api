@@ -31,6 +31,10 @@ FactoryGirl.define do
 	factory :comment, class: Api::Comment do
 	end
 
+	factory :audio, class: Api::Audio do
+		file 'sample.m4a'
+	end
+
 	factory :another_user, class: Api::User do
 		username 'glenn'
 		token 'KJHQSHKLFJQHSFHqjhsfkjhqsjfk'
