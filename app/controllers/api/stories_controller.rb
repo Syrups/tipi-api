@@ -57,8 +57,6 @@ class Api::StoriesController < ApiController
 
 	private
 	def find_story
-
-
 		@story = Api::Story.find params[:id]
 		#puts "#{@story.inspect} for #{params[:id]}  #{@story.user_id} ==  #{current_user.id} "
 		#puts @story.inspect

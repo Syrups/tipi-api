@@ -36,5 +36,4 @@ class Api::SubscriptionsController < ApiController
 		def subscription_params
 			params.require(:subscription).permit(:active)
 		end
-
 end

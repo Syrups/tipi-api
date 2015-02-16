@@ -10,6 +10,9 @@ class Api::User < ActiveRecord::Base
 	has_many :stories
 	has_many :comments
 
+	has_many :received_stories, through: :receptions, :source => :receiver
+	has_many :receptions, foreign_key: 'receiver_id'
+
 	scope :public_people, -> { where "account_type = public" }
 
 	def invite(invitee)

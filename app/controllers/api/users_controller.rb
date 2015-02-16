@@ -64,10 +64,33 @@ class Api::UsersController < ApiController
     render json: @user.invitations, status: :ok
   end
 
+  api!
+  def created
+
+    @stories = Api::Story.where(user_id: @user.id)
+   
+    render json: @stories, status: :ok
+  end
+
+  api!
+  def received
+    @stories = current_user.received_stories
+    render json: @stories, status: :ok
+  end
+
   private
   	def find_user
-  	  @user = Api::User.find params[:id]
-  	  render nothing: true, status: :not_found unless @user.present? and @user.id == current_user.id
+      begin
+
+        @user = Api::User.find params[:id]
+
+      rescue ActiveRecord::RecordNotFound
+
+        @user = Api::User.find params[:user_id]
+
+      rescue ActiveRecord::RecordNotFound
+        render nothing: true, status: :not_found unless @user.present? and @user.id == current_user.id
+      end
   	end
 
     def check_access

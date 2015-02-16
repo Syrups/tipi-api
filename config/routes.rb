@@ -19,6 +19,8 @@ Rails.application.routes.draw do
 
         resources :subscriptions, shallow: true, only: [:index, :create, :update]
 
+        get '/stories/created', on: :member, to: 'users#created'
+        get '/stories/received', on: :member, to: 'users#received'
         get '/subscribed', on: :member, to: 'users#subscribed'
         get '/subscribers', on: :member, to: 'users#subscribers'
         get '/invitations', on: :member, to: 'users#invitations'

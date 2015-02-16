@@ -11,7 +11,12 @@ describe 'Story API' do
 
 	    unless example.metadata[:skip_before]
 			@story = FactoryGirl.create :story, user_id:@glenn.id, :title => 'Go in spain!'
-			@leoStory = FactoryGirl.create :story, user_id:@leo.id
+
+			@leoStory = FactoryGirl.create :story, user_id:@leo.id, :title => 'Je code beaucoup!'
+			@leoStory.receivers << @glenn;
+			@leoStory.receivers << @olly
+
+			@leoStorySec = FactoryGirl.create :story, user_id:@leo.id, :title => 'Moi qui fait du rails!'
 			#@page = FactoryGirl.create :page
 			#@story.pages << @page
 			#story.receivers << @leo
@@ -61,9 +66,6 @@ describe 'Story API' do
 
 		it 'should return the story requested by the receiver' do
 
-			@leoStory.receivers << @glenn;
-			@leoStory.receivers << @olly
-
 			get api("/stories/#{@leoStory.id}"), {}, api_headers(token: @olly.token)
 
 			s = Api::Story.find @leoStory.id
@@ -86,6 +88,64 @@ describe 'Story API' do
 		end
 	end
 
+	describe 'PUT /stories/:id' do
+		it 'should update the story requested by the user if has acces to it' do
+			
+			story_params = {
+				:story => {
+					:title => 'Go latina !'
+				}
+			}.to_json
+
+			put api("/stories/#{@story.id}"), story_params, api_headers(token: @glenn.token)
+
+			expect(response.status).to eq 200
+
+			@story.reload
+			expect(@story.title).to eq 'Go latina !'
+			
+		end
+
+		it 'should update the throw 404' do
+			
+			story_params = {
+				:story => {
+					:title => 'Go latina !'
+				}
+			}.to_json
+
+			put api("/stories/#{@story.id}"), story_params, api_headers(token: @leo.token)
+
+			expect(response.status).to eq 404			
+		end
+	end
+
+	describe 'GET /users/:id/stories/created' do
+		it 'should return a list of created stories by leo' do
+			get api("/users/#{@leo.id}/stories/created"), {}, api_headers(token: @leo.token)
+
+			expect(response.status).to eq 200
+
+			stories = JSON.parse(response.body)
+			expect(stories.length).to eq 2	
+		end
+
+		it 'should throw 404 for glenn' do
+			get api("/users/#{@leo.id}/stories/created"), {}, api_headers(token: @glenn.token)
+
+			expect(response.status).to eq 404
+		end
+	end
+
+	describe 'GET /users/:id/stories/received' do
+		it 'should return a list of received stories' do
+			get api("/users/#{@glenn.id}/stories/received"), {}, api_headers(token: @glenn.token)
+
+			stories = JSON.parse(response.body)
+			puts stories
+		end
+	end
+
 	describe 'DELETE /stories/:id' do
 		it 'should delete the story requested by the user if has acces to it' do
 
@@ -104,32 +164,5 @@ describe 'Story API' do
 
 			expect(response.status).to eq 404
 		end
-	end
-
-	describe 'PUT /stories/:id' do
-		it 'should update the story requested by the user if has acces to it' do
-			
-			story_params = {
-				:story => {
-					:title => 'Go latina !'
-				}
-			}.to_json
-
-			put api("/stories/#{@story.id}"), story_params, api_headers(token: @glenn.token)
-
-			expect(response.status).to eq 200
-
-			@story.reload
-			expect(@story.title).to eq 'Go latina !'
-			
-		end
-	end
-
-	describe 'GET /users/:id/stories/created' do
-		it 'should return a list of created stories'
-	end
-
-	describe 'GET /users/:id/stories/received' do
-		it 'should return a list of received stories'
 	end
 end
