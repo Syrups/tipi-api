@@ -36,8 +36,6 @@ describe 'Page API' do
 			expect(page.story_id).to eq @story.id
 
 			bulk_sound = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'bah.WAV'), 'audio/x-wav')
-			
-			puts page.inspect
 
 			file_params = {
 				:audio => {
