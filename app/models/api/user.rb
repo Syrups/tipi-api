@@ -9,6 +9,8 @@ class Api::User < ActiveRecord::Base
 	has_many :invitees, through: :inverse_invitations, :source => :subscriber
 	has_many :stories
 
+	scope :public_people, -> { where "account_type = public" }
+
 	def invite(invitee)
 		invitee.invitations.create(user_id: id, subscriber_id: invitee.id, active: 0)
 	end
