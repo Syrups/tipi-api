@@ -13,8 +13,16 @@ class Api::StoriesController < ApiController
 		if @user.id == current_user.id
 			@story = Api::Story.new(user_id: story[:user_id], title: story[:title])
 
+			#&& story.pages.is_a? Integer
+			if(story.has_key?(:page_number))
+				page_number = Integer(story[:page_number])
+				page_number.times do |i|
+					@story.pages << Api::Page.new();
+				end
+			end
+
 			if @story.save
-				render json: @story, status: :created
+				render :json => @story.to_json(:include => :pages), status: :created
 			else
 				render nothing: true, status: :bad_request
 			end
@@ -32,7 +40,7 @@ class Api::StoriesController < ApiController
 			render json: @story
 		else
 			if @story.receivers.include?(@current_user)
-				render :json => @story.to_json(:include => :receivers) 
+				render :json => @story.to_json(:include => [:receivers, :pages]) 
 			else
 				render nothing: true, status: :unauthorized
 			end
@@ -72,6 +80,6 @@ class Api::StoriesController < ApiController
 		end
 
 		def story_params
-			params.require(:story).permit(:user_id, :title)
+			params.require(:story).permit(:user_id, :title, :page_number)
 		end
 end

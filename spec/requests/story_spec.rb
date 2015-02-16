@@ -47,6 +47,24 @@ describe 'Story API' do
 			expect(s.receivers.count).to eq 1	
 			expect(s.receivers.first.username).to eq "leo"	
 		end
+
+		it 'should create a story with 3 pages' , skip_before: true do
+
+			story_params = {
+				:story => {
+					:user_id => @glenn.id,
+					:title => 'cuba libre !',
+					:page_number => 3
+				}
+			}.to_json
+
+			post api("/users/#{@glenn.id}/stories"), story_params, api_headers(token: @glenn.token)
+			
+			expect(response.status).to eq 201
+
+			sj = JSON.parse(response.body)
+			expect(sj['pages'].count).to eq 3
+		end
 	end
 
 	describe 'GET /stories/:id' do
