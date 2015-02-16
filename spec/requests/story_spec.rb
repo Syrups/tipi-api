@@ -67,7 +67,7 @@ describe 'Story API' do
 		end
 
 
-		it 'should return response status 401 unauthorized' do
+		it 'should return response status not found' do
 
 			thib = FactoryGirl.create :user, username: "thib"
 			glenn = FactoryGirl.create :user, username: "glenn"
@@ -76,7 +76,7 @@ describe 'Story API' do
 			
 			get api("/stories/#{s.id}"), {}, api_headers(token: thib.token)
 
-			expect(response.status).to eq 401
+			expect(response.status).to eq 404
 		end
 	end
 

@@ -50,7 +50,7 @@ class Api::CommentsController < ApiController
 		def check_access
 			if params[:page_id].present?
 				begin
-					if not @page.story.receivers.include? current_user
+					if not current_user.can_access? @page.story
 						render nothing: true, status: :not_found
 					end
 				rescue ActiveRecord::RecordNotFound
@@ -58,7 +58,7 @@ class Api::CommentsController < ApiController
 				end
 			else
 				begin
-					if not current_user.can_access @comment.page.story
+					if not current_user.can_access? @comment.page.story
 						render nothing: true, status: :not_found
 					end
 				rescue ActiveRecord::RecordNotFound

@@ -20,7 +20,7 @@ class Api::User < ActiveRecord::Base
 		self.inverse_subscribtions.create(user_id: user.id, subscriber_id: id, active: 1)
 	end
 
-	def can_access(story)
+	def can_access?(story)
 		story.receivers.include? self or story.user.id == id
 	end
 end
