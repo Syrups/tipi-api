@@ -81,11 +81,49 @@ describe 'Story API' do
 	end
 
 	describe 'DELETE /stories/:id' do
-		it 'should delte the story requested by the user if has acces to it'
+		it 'should delte the story requested by the user if has acces to it' do
+
+			glenn = FactoryGirl.create :user, username: "glenn"
+			s = FactoryGirl.create :story, user_id:glenn.id
+
+			delete api("/stories/#{s.id}"), {}, api_headers(token: glenn.token)
+
+			expect(response.status).to eq 200
+		end
+
+		it 'should not delete the story and return 404' do
+
+			thib = FactoryGirl.create :user, username: "thib"
+			glenn = FactoryGirl.create :user, username: "glenn"
+			s = FactoryGirl.create :story, user_id:glenn.id
+
+			delete api("/stories/#{s.id}"), {}, api_headers(token: thib.token)
+
+			expect(response.status).to eq 404
+		end
 	end
 
 	describe 'PUT /stories/:id' do
-		it 'should update the story requested by the user if has acces to it'
+		it 'should update the story requested by the user if has acces to it' do
+			#thib = FactoryGirl.create :user, username: "thib"
+			glenn = FactoryGirl.create :user, username: "glenn"
+
+			s = FactoryGirl.create :story, user_id:glenn.id, :title => 'Go in spain!'
+		
+			story_params = {
+				:story => {
+					:title => 'Go latina !'
+				}
+			}.to_json
+
+			put api("/stories/#{s.id}"), story_params, api_headers(token: glenn.token)
+
+			expect(response.status).to eq 200
+
+			sj = JSON.parse(response.body)
+			expect(sj['title']).to eq 'Go latina !'
+			
+		end
 	end
 
 	describe 'GET /users/:id/stories/created' do
