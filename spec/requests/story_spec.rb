@@ -17,7 +17,7 @@ describe 'Story API' do
 			@leoStory.receivers << @olly
 
 			@leoStorySec = FactoryGirl.create :story, user_id:@leo.id, :title => 'Moi qui fait du rails!'
-			@leoStory.receivers << @glenn
+			@leoStorySec.receivers << @glenn
 			#@page = FactoryGirl.create :page
 			#@story.pages << @page
 			#story.receivers << @leo
@@ -90,7 +90,7 @@ describe 'Story API' do
 			s = Api::Story.find @leoStory.id
 
 			expect(response.status).to eq 200
-			expect(s.receivers.length).to eq 2	
+			expect(s.receivers.length).to eq 2
 		end
 
 
@@ -125,26 +125,7 @@ describe 'Story API' do
 			
 		end
 
-		# it 'should  throw 404' do
-			
-		# 	story_params = {
-		# 		:story => {
-		# 			:title => 'Go latina !'
-		# 		}
-		# 	}.to_json
-
-		# 	put api("/stories/#{@story.id}"), story_params, api_headers(token: @leo.token)
-
-		# 	expect(response.status).to eq 200
-
-		# 	s.reload
-
-		# 	sj = JSON.parse(response.body)
-		# 	expect(sj['title']).to eq 'Go latina !'
-		# 	expect(s.title).to eq 'Go latina !'
-		# end
-
-		it 'should not update the story' do
+		it 'should not update the story and  throw 404' do
 			thib = FactoryGirl.create :user, username: "thib"
 			glenn = FactoryGirl.create :user, username: "glenn"
 			s = FactoryGirl.create :story, user_id:glenn.id
