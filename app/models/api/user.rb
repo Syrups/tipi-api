@@ -15,7 +15,7 @@ class Api::User < ActiveRecord::Base
 
 	has_one :audio, inverse_of: :user
 
-	scope :public_people, -> { where "account_type = public" }
+	scope :public_people, -> { where "account_type = 'public'" }
 
 	def invite(invitee)
 		invitee.invitations.create(user_id: id, subscriber_id: invitee.id, active: 0)

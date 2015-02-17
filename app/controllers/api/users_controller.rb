@@ -5,8 +5,8 @@ class Api::UsersController < ApiController
   # Verify request authentication for all endpoints
   # except user creation
   before_filter :authenticate_request, except: :create
-  before_filter :find_user, except: [:create, :search]
-  before_filter :check_access, except: [:create, :show, :search]
+  before_filter :find_user, except: [:create, :index, :search]
+  before_filter :check_access, except: [:create, :index, :show, :search]
 
   api!
   def create
@@ -29,6 +29,11 @@ class Api::UsersController < ApiController
     	  render nothing: true, status: :bad_request
       end
     end
+  end
+
+  api!
+  def index # list of public broadcasters
+    render json: Api::User.public_people
   end
 
   api!
@@ -89,17 +94,16 @@ class Api::UsersController < ApiController
 
   private
   	def find_user
+      if params[:user_id].present?
+        id = params[:user_id]
+      else
+        id = params[:id]
+      end
 
       begin
-        @user = Api::User.includes(:stories).find params[:id]
+        @user = Api::User.includes(:stories).find id
       rescue ActiveRecord::RecordNotFound
-        if params[:user_id].present?
-          begin
-            @user = Api::User.includes(:stories).find params[:user_id]
-          rescue ActiveRecord::RecordNotFound
-            render nothing: true, status: :not_found
-          end
-        end
+        render nothing: true, status: :not_found
       end
   	end
 

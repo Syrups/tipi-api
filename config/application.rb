@@ -23,6 +23,8 @@ module Fables
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
+    config.exceptions_app = self.routes
+
     config.autoload_paths << Rails.root.join('app/services')
   end
 end

@@ -1,9 +1,4 @@
-FactoryGirl.define do  factory :api_medium, :class => 'Api::Media' do
-    file "MyString"
-page ""
-type ""
-  end
-
+FactoryGirl.define do 
 
 	factory :user, class: Api::User do
 		username 'leoht'
@@ -44,5 +39,12 @@ type ""
 		username 'glenn'
 		token 'KJHQSHKLFJQHSFHqjhsfkjhqsjfk'
 		password 'google'
+	end
+
+	factory :public_user, class: Api::User do
+		username 'Radio 121'
+		token '87987sdjghsdjgkh786786786YHshdfhsiudfh'
+		password 'radio'
+		account_type 'public'
 	end
 end
