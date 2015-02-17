@@ -1,4 +1,9 @@
-FactoryGirl.define do
+FactoryGirl.define do  factory :api_medium, :class => 'Api::Media' do
+    file "MyString"
+page ""
+type ""
+  end
+
 
 	factory :user, class: Api::User do
 		username 'leoht'

@@ -36,7 +36,7 @@ describe 'Page API' do
 			@page = @story.pages.create!(position: 1, duration: 8)
 		end
 
-		it 'should create a page associated to a story with audio' do			
+		it 'should create page audio' do			
 			bulk_sound = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'bah.WAV'), 'audio/x-wav')
 
 			file_params = {
@@ -50,6 +50,28 @@ describe 'Page API' do
 			expect(response.status).to eq 201
 			expect(@page.audio).to be_present
 			expect(@page.audio.file).to eq Rails.root.join('spec', 'fixtures', 'output', 'bah.WAV').to_s
+		end
+	end
+
+	describe 'POST /pages/:id/media' do
+		before :each do
+			@page = @story.pages.create!(position: 1, duration: 8)
+		end
+
+		it 'should create page media' do
+			media = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'steph.jpg'), 'image/jpeg')
+
+			file_params = {
+				:media => {
+					:file => media
+				}
+			}
+
+			post api("/pages/#{@page.id}/media"), file_params, api_headers(token: @glenn.token)
+
+			expect(response.status).to eq 201
+			expect(@page.media).to be_present
+			expect(@page.media.file).to eq Rails.root.join('spec', 'fixtures', 'output', 'steph.jpg').to_s
 		end
 	end
 end
