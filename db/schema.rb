@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150217110936) do
+ActiveRecord::Schema.define(version: 20150217161556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,12 +61,14 @@ ActiveRecord::Schema.define(version: 20150217110936) do
   end
 
   create_table "api_stories", force: :cascade do |t|
-    t.datetime "created_at",                 null: false
+    t.datetime "created_at",                     null: false
     t.string   "title"
     t.integer  "page_count"
     t.integer  "user_id"
-    t.datetime "updated_at",                 null: false
+    t.datetime "updated_at",                     null: false
     t.boolean  "published",  default: false
+    t.string   "story_type", default: "private"
+    t.boolean  "candidate",  default: false
   end
 
   create_table "api_subscribtions", force: :cascade do |t|

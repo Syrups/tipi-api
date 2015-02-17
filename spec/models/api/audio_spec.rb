@@ -25,6 +25,6 @@ describe Api::Audio do
 		audio = @page1.create_audio!(file: "#{directory}/#{name}")
 	
 
-		#expect(audio.is_owner?( @page1)).to eq true
+		expect(@page1.audio).to be_present
 	end
 end

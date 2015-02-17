@@ -38,4 +38,10 @@ describe 'API' do
 
 		expect(response.status).to eq 401
 	end
+
+	it 'should not found' do
+		get api("/foo"), {}, api_headers
+
+		expect(response.status).to eq 404
+	end
 end
