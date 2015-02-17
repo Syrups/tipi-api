@@ -55,7 +55,7 @@ describe 'Story API' do
 				:story => {
 					:user_id => @glenn.id,
 					:title => 'cuba libre !',
-					:page_number => 3
+					:page_count => 3
 				}
 			}.to_json
 

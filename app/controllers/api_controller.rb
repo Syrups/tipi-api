@@ -2,8 +2,6 @@ class ApiController < ApplicationController
 
   VERSION = 1
 
-  rescue_from ActionController::ParameterMissing, with: -> { render nothing: true, status: :bad_request }
-
   def authenticate
     user = Api::User.find_by_username params[:username]
 

@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
       post '/authenticate', to: 'api#authenticate'
 
-      resources :users, module: :api, except: [:index, :new, :edit], contraints: { id: /^[0-9]+$/} do
+      resources :users, module: :api, except: [:new, :edit], contraints: { id: /^[0-9]+$/} do
         resources :stories, shallow: true, except: [:index, :new, :edit] do
           resources :pages,  shallow: true, except: [:index, :new, :edit] do
             resource :media,  shallow: true, except: [:index, :new, :edit]
@@ -29,4 +29,6 @@ Rails.application.routes.draw do
 
     end
   end
+
+  match '*a', to: 'application#not_found', via: :all
 end

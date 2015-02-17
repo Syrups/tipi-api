@@ -6,15 +6,13 @@ class Api::StoriesController < ApiController
 
 	api!
 	def create
-		story = story_params
-
-		@user = Api::User.find story[:user_id]
+		@user = Api::User.find params[:user_id]
 
 		if @user.id == current_user.id
-			@story = Api::Story.new(user_id: story[:user_id], title: story[:title])
+			@story = @user.stories.create!(story_params)
 
-			if(story.has_key?(:page_number))
-				page_number = Integer(story[:page_number])
+			if(story_params.has_key?(:page_count))
+				page_number = Integer(story_params[:page_count])
 				page_number.times do |i|
 					@story.pages << Api::Page.new();
 				end
@@ -32,9 +30,12 @@ class Api::StoriesController < ApiController
 
 	api!
 	def show
+		begin
+			@story = Api::Story.find params[:id]
+		rescue ActiveRecord::RecordNotFound
+			render nothing:true, status: :not_found
+		end
 
-		@story = Api::Story.find params[:id]
-		
 		if @current_user.id == @story.user_id
 			render json: @story
 		else
@@ -60,6 +61,11 @@ class Api::StoriesController < ApiController
 	def update
 		if @story.is_owner? current_user
 			@story.update!(story_params)
+
+			# Once the story is published,
+			# each subscriber receives the story
+			# @story.send
+
 			render json: @story
 		else
 			render nothing: true, status: 404
@@ -70,14 +76,15 @@ class Api::StoriesController < ApiController
 		def find_story
 			begin
 				@story = Api::Story.find params[:id]
+				if not current_user.can_access? @story
+					render nothing: true, status: :not_found
+				end
 			rescue ActiveRecord::RecordNotFound
 				render nothing: true, status: :not_found
 			end
-
-			render nothing: true, status: :not_found unless current_user.can_access? @story
 		end
 
 		def story_params
-			params.require(:story).permit(:user_id, :title, :page_number)
+			params.require(:story).permit(:title, :page_count, :published)
 		end
 end

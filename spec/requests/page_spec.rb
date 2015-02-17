@@ -74,4 +74,32 @@ describe 'Page API' do
 			expect(@page.media.file).to eq Rails.root.join('spec', 'fixtures', 'output', 'steph.jpg').to_s
 		end
 	end
+
+	# describe 'PUT /pages/:id/audio' do
+	# 	before :each do
+	# 		@page = @story.pages.create!(position: 1, duration: 8)
+	# 		path = Rails.root.join('spec', 'fixtures', 'files', 'bah.WAV').to_s
+	# 		@page.create_audio!(file: path)
+	# 	end
+
+	# 	it 'should update page audio' do
+	# 		put api("/pages/#{@page.id}/audio"), file_params, api_headers(token: @glenn.token)
+
+	# 		expect(response.status).to eq 200
+	# 	end
+	# end
+
+	# describe 'PUT /pages/:id/media' do
+	# 	before :each do
+	# 		@page = @story.pages.create!(position: 1, duration: 8)
+	# 		path = Rails.root.join('spec', 'fixtures', 'files', 'steph.jpg').to_s
+	# 		@page.create_audio!(file: path)
+	# 	end
+
+	# 	it 'should update page audio' do
+	# 		put api("/pages/#{@page.id}/media"), file_params, api_headers(token: @glenn.token)
+
+	# 		expect(response.status).to eq 200
+	# 	end
+	# end
 end

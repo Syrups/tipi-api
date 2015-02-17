@@ -59,6 +59,20 @@ describe 'Users API' do
 		end
 	end
 
+	describe 'GET /users' do
+		it 'should list public people' do
+			u = FactoryGirl.create :public_user
+			leo = FactoryGirl.create :user
+
+			expected_response = [u].to_json
+
+			get api("/users"), {}, api_headers(token: leo.token)
+
+			expect(response.status).to eq 200
+			expect(response.body).to eq expected_response
+		end
+	end
+
 	describe 'PUT /users/:id' do
 		it 'should update user' do
 			u = FactoryGirl.create :user
