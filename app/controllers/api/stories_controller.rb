@@ -61,6 +61,11 @@ class Api::StoriesController < ApiController
 	def update
 		if @story.is_owner? current_user
 			@story.update!(story_params)
+
+			# Once the story is published,
+			# each subscriber receives the story
+			# @story.send
+
 			render json: @story
 		else
 			render nothing: true, status: 404
@@ -80,6 +85,6 @@ class Api::StoriesController < ApiController
 		end
 
 		def story_params
-			params.require(:story).permit(:title, :page_count)
+			params.require(:story).permit(:title, :page_count, :published)
 		end
 end

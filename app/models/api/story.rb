@@ -7,4 +7,12 @@ class Api::Story < ActiveRecord::Base
 	def is_owner?(owner)
 		owner.id == user.id
 	end
+
+	def send_to_subscribers
+		user.subscribers.each do |sub|
+			receivers << sub
+		end
+
+		save!
+	end
 end
