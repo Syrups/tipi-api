@@ -1,23 +1,26 @@
 class Api::AudiosController < ApiController
+	before_filter :authenticate_request
 
 	api!
 	def create
-		name = params[:audio][:file].original_filename
+			name = audio_params[:file].original_filename
 	    directory = "#{::Rails.root}/spec/fixtures/output"
 	    path = File.join(directory, name)
 
-	    File.open(path, "wb") { |f| f.write(params[:audio][:file].read) }
+	    File.open(path, "wb") { |f| f.write(audio_params[:file].read) }
 
 	    @page = Api::Page.find params[:page_id]
-	    @audio =  Api::Audio.new(file: "#{::Rails.root}/spec/fixtures/output/#{name}")
-
-	    @page.audio = @audio 
+	    @audio = @page.create_audio!(file: "#{::Rails.root}/spec/fixtures/output/#{name}")
 	    
 		if @page.save
-			puts  @page.audio.inspect
 			render json: @page, status: :created
 		else
 			render nothing: true, status: :bad_request
 		end
 	end
+
+	private
+		def audio_params
+			params.require(:audio).permit(:file)
+		end
 end

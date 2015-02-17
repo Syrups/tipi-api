@@ -8,11 +8,13 @@ describe 'Page API' do
 
 	end
 
-	describe 'POST /users/:id/stories/:id/pages' do
+	describe 'POST /stories/:id/pages' do
 		it 'should create a page associated to a story' do
 
 			page_params = {
-				:story => {
+				:page => {
+					:position => 1,
+					:duration => 8
 				}
 			}.to_json
 
@@ -24,17 +26,17 @@ describe 'Page API' do
 			page = Api::Page.find pj['id']
 
 			expect(page.story_id).to eq @story.id
+			expect(@story.pages.include?(page)).to eq true
+		end
+	end
+
+	describe 'POST /pages/:id/audio' do
+
+		before :each do
+			@page = @story.pages.create!(position: 1, duration: 8)
 		end
 
 		it 'should create a page associated to a story with audio' do			
-			
-			post api("/stories/#{@story.id}/pages"), {}, api_headers(token: @glenn.token)
-
-			expect(response.status).to eq 201
-
-			page = Api::Page.find JSON.parse(response.body)['id']
-			expect(page.story_id).to eq @story.id
-
 			bulk_sound = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'bah.WAV'), 'audio/x-wav')
 
 			file_params = {
@@ -43,7 +45,11 @@ describe 'Page API' do
 				}
 			}
 
-			post api("/pages/#{page.id}/audio"), file_params, api_headers(token: @glenn.token)
+			post api("/pages/#{@page.id}/audio"), file_params, api_headers(token: @glenn.token)
+
+			expect(response.status).to eq 201
+			expect(@page.audio).to be_present
+			expect(@page.audio.file).to eq Rails.root.join('spec', 'fixtures', 'output', 'bah.WAV').to_s
 		end
 	end
 end
