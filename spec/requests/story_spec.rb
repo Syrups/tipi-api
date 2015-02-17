@@ -18,9 +18,6 @@ describe 'Story API' do
 
 			@leoStorySec = FactoryGirl.create :story, user_id:@leo.id, :title => 'Moi qui fait du rails!'
 			@leoStorySec.receivers << @glenn
-			#@page = FactoryGirl.create :page
-			#@story.pages << @page
-			#story.receivers << @leo
 	    end
 	end
 	
