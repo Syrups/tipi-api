@@ -17,6 +17,7 @@ describe 'Story API' do
 			@leoStory.receivers << @olly
 
 			@leoStorySec = FactoryGirl.create :story, user_id:@leo.id, :title => 'Moi qui fait du rails!'
+			@leoStory.receivers << @glenn
 			#@page = FactoryGirl.create :page
 			#@story.pages << @page
 			#story.receivers << @leo
@@ -188,6 +189,14 @@ describe 'Story API' do
 			get api("/users/#{@glenn.id}/stories/received"), {}, api_headers(token: @glenn.token)
 
 			stories = JSON.parse(response.body)
+
+			expect(stories.length).to eq 2	
+		end
+
+		it 'should throw 404 for glenn' do
+			get api("/users/#{@leo.id}/stories/received"), {}, api_headers(token: @glenn.token)
+
+			expect(response.status).to eq 404
 		end
 	end
 
@@ -208,8 +217,6 @@ describe 'Story API' do
 			s.receivers << @thib # Even a receiver should not be allowed to delete, ONLY the owner
 
 			delete api("/stories/#{s.id}"), {}, api_headers(token: @thib.token)
-
-			expect(response.status).to eq 404
 
 			expect(response.status).to eq 404
 		end
