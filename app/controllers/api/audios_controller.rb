@@ -3,7 +3,8 @@ class Api::AudiosController < ApiController
 
 	api!
 	def create
-			name = audio_params[:file].original_filename
+		
+		name = audio_params[:file].original_filename
 	    directory = "#{::Rails.root}/spec/fixtures/output"
 	    path = File.join(directory, name)
 
