@@ -37,7 +37,7 @@ class Api::StoriesController < ApiController
 		end
 
 		if @current_user.id == @story.user_id
-			render json: @story
+			render json: @story.json_with_pages
 		else
 			if @story.receivers.include?(@current_user)
 				render :json => @story.to_json(:include => [:receivers, :pages]) 
@@ -65,7 +65,6 @@ class Api::StoriesController < ApiController
 			# Once the story is published,
 			# each subscriber receives the story
 			# @story.send
-
 			render json: @story
 		else
 			render nothing: true, status: 404
@@ -85,6 +84,6 @@ class Api::StoriesController < ApiController
 		end
 
 		def story_params
-			params.require(:story).permit(:title, :page_count, :published)
+			params.require(:story).permit(:title, :page_count, :published, :candidate, :story_type)
 		end
 end

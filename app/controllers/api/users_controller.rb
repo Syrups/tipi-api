@@ -38,7 +38,7 @@ class Api::UsersController < ApiController
 
   api!
   def show
-    render json: @user.to_json(:include => [:audio, :stories] )
+    render json: @user.json_with_audio_and_stories
   end
 
   api!

@@ -28,4 +28,13 @@ describe Api::User do
 		expect(@leo.can_access?(@story)).to eq true
 		expect(@glenn.can_access?(@story)).to eq true
 	end
+
+	it 'should have access to public story' do
+		@radio = FactoryGirl.create :public_user
+
+		@story = @radio.stories.create!(title: 'Public story', story_type: 'public')
+
+		expect(@leo.can_access?(@story)).to eq true
+		expect(@glenn.can_access?(@story)).to eq true
+	end
 end

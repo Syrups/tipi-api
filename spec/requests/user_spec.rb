@@ -40,7 +40,7 @@ describe 'Users API' do
 			get api("/users/#{u.id}"), {}, api_headers(token: u.token)
 
 			expect(response.status).to eq 200
-			expect(Api::User.first.username).to eq 'leoht'
+			expect(JSON.parse(response.body)['id']).to eq u.id
 		end
 	end
 
@@ -85,8 +85,10 @@ describe 'Users API' do
 
 			put api("/users/#{u.id}"), user_params, api_headers(token: u.token)
 
+			u.reload
+
 			expect(response.status).to eq 200
-			expect(Api::User.first.password).to eq 'blabla'
+			expect(u.password).to eq 'blabla'
 		end
 
 		it 'should update user audio' do

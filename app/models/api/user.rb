@@ -26,7 +26,11 @@ class Api::User < ActiveRecord::Base
 	end
 
 	def can_access?(story)
-		story.receivers.include? self or story.user.id == id
+		# A user has read access to a story if :
+		# - He received it
+		# - He created it
+		# - It is a public story from a broadcaster
+		story.receivers.include? self or story.user.id == id or story.is_public?
 	end
 
 	def is_public?
@@ -35,5 +39,10 @@ class Api::User < ActiveRecord::Base
 
 	def self.search(query)
 		where('username LIKE :username', username: query)
+	end
+
+	# JSON serialization
+	def json_with_audio_and_stories
+		to_json(:include => [:audio, :stories], :except => [:password, :salt, :token, :audio_id])
 	end
 end
