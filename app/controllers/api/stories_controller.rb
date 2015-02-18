@@ -84,6 +84,6 @@ class Api::StoriesController < ApiController
 		end
 
 		def story_params
-			params.require(:story).permit(:title, :page_count, :published, :candidate, :story_type)
+			params.require(:story).permit(:title, :page_count, :published, :candidate, :story_type, :pages)
 		end
 end

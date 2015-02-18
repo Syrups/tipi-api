@@ -15,6 +15,9 @@ class Api::User < ActiveRecord::Base
 
 	has_one :audio, inverse_of: :user
 
+	has_many :apple_devices, -> { where "platform = 'ios'" }, class_name: 'Api::UserDevice'
+	has_many :android_devices, -> { where "platform = 'android'" }, class_name: 'Api::UserDevice'
+
 	scope :public_people, -> { where "account_type = 'public'" }
 
 	def invite(invitee)
