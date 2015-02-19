@@ -37,4 +37,24 @@ describe Api::User do
 		expect(@leo.can_access?(@story)).to eq true
 		expect(@glenn.can_access?(@story)).to eq true
 	end
+
+	it 'should send friend request' do
+		@leo.add_friend @glenn
+
+		expect(@leo.requested.include?(@glenn)).to eq true
+		expect(@glenn.requesting.include?(@leo)).to eq true
+
+	end
+
+	it 'should accept friend request' do
+		@leo.add_friend @glenn
+		@glenn.accept_friend @leo
+		
+		expect(@leo.outcoming_friends.include?(@glenn)).to eq true
+		expect(@glenn.incoming_friends.include?(@leo)).to eq true
+		expect(@leo.requested.length).to eq 0
+		expect(@leo.requesting.length).to eq 0
+		expect(@leo.friends.include?(@glenn)).to eq true
+		expect(@glenn.friends.include?(@leo)).to eq true
+	end
 end
