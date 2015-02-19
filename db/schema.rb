@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150218000359) do
+ActiveRecord::Schema.define(version: 20150219154100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,23 @@ ActiveRecord::Schema.define(version: 20150218000359) do
     t.integer  "receiver_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+  end
+
+  create_table "api_rooms", force: :cascade do |t|
+    t.integer  "owner_id"
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "api_rooms_stories", id: false, force: :cascade do |t|
+    t.integer "story_id", null: false
+    t.integer "room_id",  null: false
+  end
+
+  create_table "api_rooms_users", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "room_id", null: false
   end
 
   create_table "api_stories", force: :cascade do |t|

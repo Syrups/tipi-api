@@ -1,9 +1,4 @@
-FactoryGirl.define do  factory :api_user_device, :class => 'Api::UserDevice' do
-    token "MyString"
-user nil
-platform "MyString"
-  end
- 
+FactoryGirl.define do
 
 	factory :user, class: Api::User do
 		username 'leoht'

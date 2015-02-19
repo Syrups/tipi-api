@@ -3,6 +3,7 @@ class Api::Story < ActiveRecord::Base
 	has_many :receivers, through: :receptions, foreign_key: 'receiver_id'
 	has_many :receptions
 	has_many :pages, inverse_of: :story
+	has_and_belongs_to_many :rooms
 
 	def is_owner?(owner)
 		owner.id == user.id

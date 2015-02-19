@@ -13,6 +13,9 @@ class Api::User < ActiveRecord::Base
 	has_many :received_stories, through: :receptions, :source => :story
 	has_many :receptions, foreign_key: 'receiver_id'
 
+	has_and_belongs_to_many :rooms
+	has_many :owned_rooms, class_name: 'Api::Room', foreign_key: 'owner_id'
+
 	has_one :audio, inverse_of: :user
 
 	has_many :apple_devices, -> { where "platform = 'ios'" }, class_name: 'Api::UserDevice'
