@@ -63,6 +63,11 @@ class Api::User < ActiveRecord::Base
 		incoming_friends | outcoming_friends
 	end
 
+	# All incoming and outcoming friends
+	def all_rooms
+		owned_rooms | rooms
+	end
+
 	def subscribe_to(user)
 		self.inverse_subscribtions.create(user_id: user.id, subscriber_id: id, active: 1)
 	end
@@ -73,6 +78,15 @@ class Api::User < ActiveRecord::Base
 		# - He created it
 		# - It is a public story from a broadcaster
 		story.receivers.include? self or story.user.id == id or story.is_public?
+	end
+
+	def can_access_room?(room)
+		# A user has read access to a story if :
+		# - He received it
+		# - He created it
+		# - It is a public story from a broadcaster
+		room.users.include? self or room.is_owner? self
+		#or room.is_public?
 	end
 
 	def is_public?

@@ -17,7 +17,16 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :rooms, shallow: true, except: [:new, :edit] do
+          get '/stories', on: :member, to: 'rooms#stories'
+          get '/users', on: :member, to: 'rooms#index_users'
+          post '/users', on: :member, to: 'rooms#add_users'
+          delete '/stories/:story_id', on: :member, to: 'rooms#remove_story'
+          delete '/users/:user_id', on: :member, to: 'rooms#remove_user'
+        end
+
         resources :subscriptions, shallow: true, only: [:index, :create, :update]
+
 
         get '/stories/created', on: :member, to: 'users#created'
         get '/stories/received', on: :member, to: 'users#received'
@@ -25,6 +34,7 @@ Rails.application.routes.draw do
         get '/subscribed', on: :member, to: 'users#subscribed'
         get '/subscribers', on: :member, to: 'users#subscribers'
         get '/invitations', on: :member, to: 'users#invitations'
+        
       end
 
     end

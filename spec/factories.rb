@@ -12,6 +12,10 @@ friend_id 1
 		token { Security.generate_token(username) }
 	end
 
+	factory :room, class: Api::Room do
+		name 'Fablelous'	
+	end
+
 	factory :page, class: Api::Page do
 		position 1		
 	end
@@ -19,6 +23,7 @@ friend_id 1
 	factory :story, class: Api::Story do
 		user_id 'leoht'
 		title 'jkhsdhfshdfsd786768687dsfsdf'
+		tag 'gobelins'
 		factory :story_with_receivers do
 			after_create do |story|
 				FactoryGirl.create(:user, story: story)
