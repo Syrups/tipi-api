@@ -63,6 +63,51 @@ describe 'Story API' do
 			sj = JSON.parse(response.body)
 			expect(sj['pages'].count).to eq 3
 		end
+
+		it 'should create story in 2 rooms', skip_before: true do
+			@fableRoom = FactoryGirl.create :room, owner_id: @leo.id, name: 'Fables'
+			@syrupsRoom = FactoryGirl.create :room, owner_id: @glenn.id, name: 'Syrups'
+
+			@fableRoom.users << @olly
+			@syrupsRoom.users << @olly
+
+			story_params = {
+				:story => {
+					:title => 'cuba libre !',
+					:page_count => 3,
+					:rooms => [@fableRoom.id, @syrupsRoom.id]
+				}
+			}.to_json
+
+			post api("/users/#{@olly.id}/stories"), story_params, api_headers(token: @olly.token)
+
+			expect(response.status).to eq 201
+
+			@story = Api::Story.take
+
+			expect(@fableRoom.stories.include?(@story)).to eq true
+			expect(@syrupsRoom.stories.include?(@story)).to eq true
+
+		end
+
+		it 'should not create a story in a room I\'m not in' do
+			@fableRoom = FactoryGirl.create :room, owner_id: @leo.id, name: 'Fables'
+
+			# Olly is not in fableRoom
+			expect(@olly.rooms.include?(@fableRoom)).to eq false
+
+			story_params = {
+				:story => {
+					:title => 'cuba libre !',
+					:page_count => 3,
+					:rooms => [@fableRoom.id]
+				}
+			}.to_json
+
+			post api("/users/#{@olly.id}/stories"), story_params, api_headers(token: @olly.token)
+
+			expect(response.status).to eq 404
+		end
 	end
 
 	describe 'GET /stories/:id' do

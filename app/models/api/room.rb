@@ -9,6 +9,10 @@ class Api::Room < ActiveRecord::Base
 		stories.where('tag LIKE :tag', tag: tag)
 	end
 
+	def stories_of_user(user_id)
+		stories.where('user_id = :user_id', user_id: user_id)
+	end
+
 	def is_owner?(user)
 		owner.id == user.id
 	end

@@ -14,7 +14,27 @@ class Api::StoriesController < ApiController
 			if(story_params.has_key?(:page_count))
 				page_number = Integer(story_params[:page_count])
 				page_number.times do |i|
-					@story.pages << Api::Page.new();
+					@story.pages << Api::Page.new
+				end
+			end
+
+
+			if (params[:story].has_key?(:rooms))
+				@rooms = params[:story][:rooms]
+				@rooms.each_with_index do |val, index|
+					room_id = Integer(val)
+					room = Api::Room.find room_id
+
+					if room.present?
+
+						# Check that the user CAN post a story in this room,
+						# i.e if he's the owner or an included user of this room
+						if room.participants.include?(current_user)
+							@story.rooms << room
+						else
+							render nothing: true, status: :not_found and return
+						end
+					end
 				end
 			end
 
@@ -81,6 +101,10 @@ class Api::StoriesController < ApiController
 			rescue ActiveRecord::RecordNotFound
 				render nothing: true, status: :not_found
 			end
+		end
+
+		def rooms_param
+			params.require(:story).permit(:rooms)
 		end
 
 		def story_params

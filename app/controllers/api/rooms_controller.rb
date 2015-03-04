@@ -72,6 +72,8 @@ class Api::RoomsController < ApiController
 		if(params.has_key?(:tag))
 			#puts params[:tag]
 			render json: @room.stories_with_tag(params[:tag]), status: :ok
+		elsif (params.has_key?(:user))
+			render json: @room.stories_of_user(params[:user]), status: :ok
 		else
 			render json: @room.stories, status: :ok
 		end		

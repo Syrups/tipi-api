@@ -96,13 +96,17 @@ describe 'Rooms API' do
 
 		it 'should filter stories with query tag LosAngeles' do
 			
-			get api("/rooms/#{@leoRoom.id}/stories/?tag=LosAngeles"), {}, api_headers(token: @leo.token)
+			get api("/rooms/#{@leoRoom.id}/stories/?user=#{@leo.id}"), {}, api_headers(token: @leo.token)
 
 			expect(response.status).to eq 200
 
 			rJ = JSON.parse(response.body)
 
 			expect(rJ.count).to eq 1
+		end
+
+		it 'should filter only stories of leo' do
+
 		end
 	end
 

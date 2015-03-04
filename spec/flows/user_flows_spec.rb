@@ -36,6 +36,47 @@ RSpec.describe "UserFlows", type: :request do
 	describe 'Story creation' do
 		before :each do
 			@leo = FactoryGirl.create :user
+			@glenn = FactoryGirl.create :user, username: 'glenn'
+			@olly = FactoryGirl.create :user, username: 'olly'
+		end
+
+		it 'should create a room with people and a story' do
+			room_params = {
+				:room => {
+					:name => 'Fables team',
+					:users => [@leo.id, @glenn.id, @olly.id]
+				}
+			}.to_json
+
+			post api("/users/#{@leo.id}/rooms"), room_params, api_headers(token: @leo.token)
+
+			expect(response.status).to eq 201
+
+			@room = Api::Room.take
+			expect(@room).to be_present
+
+			story_params = {
+				:story => {
+					:title => 'Nice story',
+					:page_count => 10,
+					:type => 'private',
+					:rooms => [@room.id]
+				}
+			}.to_json
+
+			post api("/users/#{@olly.id}/stories"), story_params, api_headers(token: @olly.token)
+
+			expect(response.status).to eq 201
+			@story = Api::Story.take
+
+			@room.reload
+			@story.reload
+
+			expect(@story).to be_present
+
+			expect(@room.stories.length).to eq 1
+			expect(@story.rooms.length).to eq 1
+			expect(@room.stories.include?(@story)).to eq true
 		end
 
 		it 'should create a story and upload medias' do
@@ -71,5 +112,7 @@ RSpec.describe "UserFlows", type: :request do
 			expect(response.status).to eq 201
 			expect(@page.media).to be_present
 		end
+
+
 	end
 end
