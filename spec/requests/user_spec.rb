@@ -7,7 +7,9 @@ describe 'Users API' do
 			user_params = {
 				:user => {
 					:username => 'leoht',
-					:password => 'toto13'
+					:password => 'toto13',
+					:device_token => '1234',
+					:device_type => 'ios'
 				}
 			}.to_json
 
@@ -15,6 +17,8 @@ describe 'Users API' do
 
 			expect(response.status).to eq 201
 			expect(Api::User.first.username).to eq 'leoht'
+			expect(Api::User.first.device_token).to eq '1234'
+			expect(Api::User.first.device_type).to eq 'ios'
 		end
 
 		it 'should respond with 409 conflict' do

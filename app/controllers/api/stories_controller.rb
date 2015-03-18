@@ -31,6 +31,9 @@ class Api::StoriesController < ApiController
 						# i.e if he's the owner or an included user of this room
 						if room.participants.include?(current_user)
 							@story.rooms << room
+
+							# Notify all members of the room
+							::Push.send_to_many(room.participants, "A new story has been posted by "+@user.username+" in room "+room.name)
 						else
 							render nothing: true, status: :not_found and return
 						end

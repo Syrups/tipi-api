@@ -21,9 +21,9 @@ class Api::UsersController < ApiController
     	password = ::Security.hash_password(user[:password], salt)
       token = ::Security.generate_token(user[:username])
 
-    	@user = Api::User.new(username: user[:username], password: password, salt: salt, token: token)
+    	@user = Api::User.new(username: user[:username], device_token: user[:device_token], device_type: user[:device_type], password: password, salt: salt, token: token)
 
-    	if @user.save
+    	if @user.save!
     	  render json: @user, status: :created
     	else
     	  render nothing: true, status: :bad_request
@@ -118,7 +118,7 @@ class Api::UsersController < ApiController
     end
 
     def user_params
-      params.require(:user).permit(:username, :password, :account_type, :audio)
+      params.require(:user).permit(:username, :password, :account_type, :audio, :device_token, :device_type)
     end
 
     def audio_params
