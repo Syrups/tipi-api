@@ -1,4 +1,4 @@
-class AddTypeToUser < ActiveRecord::Migration
+class AddAccountTypeToUser < ActiveRecord::Migration
   def change
   	add_column :api_users, :account_type, :string, default: 'basic'
   end
