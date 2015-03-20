@@ -25,6 +25,8 @@ module Fables
 
     config.exceptions_app = self.routes
 
+    config.assets.enabled = false
+
     config.autoload_paths << Rails.root.join('app/services')
   end
 end
