@@ -41,7 +41,7 @@ class Api::StoriesController < ApiController
 				end
 			end
 
-			if @story.save
+			if @story.save!
 				render :json => @story.to_json(:include => :pages), status: :created
 			else
 				render nothing: true, status: :bad_request
@@ -111,6 +111,6 @@ class Api::StoriesController < ApiController
 		end
 
 		def story_params
-			params.require(:story).permit(:title, :page_count, :published, :candidate, :story_type, :pages)
+			params.require(:story).permit(:title, :page_count, :published, :candidate, :story_type, :pages, :tag)
 		end
 end

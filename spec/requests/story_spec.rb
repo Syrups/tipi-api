@@ -52,7 +52,7 @@ describe 'Story API' do
 				:story => {
 					:user_id => @glenn.id,
 					:title => 'cuba libre !',
-					:page_count => 3
+					:page_count => 3,
 				}
 			}.to_json
 
@@ -75,7 +75,8 @@ describe 'Story API' do
 				:story => {
 					:title => 'cuba libre !',
 					:page_count => 3,
-					:rooms => [@fableRoom.id, @syrupsRoom.id]
+					:rooms => [@fableRoom.id, @syrupsRoom.id],
+					:tag => 'cocktails'
 				}
 			}.to_json
 
@@ -84,6 +85,8 @@ describe 'Story API' do
 			expect(response.status).to eq 201
 
 			@story = Api::Story.take
+
+			expect(@story.tag).to eq 'cocktails'
 
 			expect(@fableRoom.stories.include?(@story)).to eq true
 			expect(@syrupsRoom.stories.include?(@story)).to eq true
