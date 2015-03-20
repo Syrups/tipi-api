@@ -25,6 +25,9 @@ gem 'devise'
 
 gem "apns"
 
+# Api documentation
+gem 'apipie-rails'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -38,8 +41,7 @@ group :development, :test do
   # Code coverage
   gem 'simplecov'
 
-  # Api documentation
-	gem 'apipie-rails'
+  
 
 	# RSpec
 	gem 'rspec-rails'
