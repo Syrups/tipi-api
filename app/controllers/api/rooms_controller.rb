@@ -28,7 +28,7 @@ class Api::RoomsController < ApiController
 				end
 			end
 			
-			if @room.save
+			if @room.save!
 				render :json =>  @room.to_json(:include => [:users, :stories]), status: :created
 			else
 				render nothing: true, status: :bad_request
