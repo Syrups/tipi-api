@@ -1,4 +1,7 @@
-FactoryGirl.define do  factory :api_friendship, :class => 'Api::Friendship' do
+FactoryGirl.define do  factory :api_presence, :class => 'Api::Presence' do
+    
+  end
+  factory :api_friendship, :class => 'Api::Friendship' do
     active false
 user_id 1
 friend_id 1

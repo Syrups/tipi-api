@@ -23,7 +23,7 @@ describe 'Rooms API' do
 			@glennRoom = FactoryGirl.create :room, owner_id:@glenn.id, :name => 'Team Fable powa'
 
 			@leoRoom = FactoryGirl.create :room, owner_id:@leo.id, :name => 'Team Syrups'
-			@leoRoom.users << @glenn
+			@leoRoom.add_user @glenn
 			@leoRoom.stories << @glennStory
 			@leoRoom.stories << @leoStory
 	    end
@@ -47,7 +47,7 @@ describe 'Rooms API' do
 			expect(r.name).to eq "Team Fables"
 		end
 
-		it 'should create room with users in it', skip_before: true do
+		it 'should create room and invite users', skip_before: true do
 			room_params = {
 				:room => {
 					:name => 'Team Fables assemblee',
@@ -63,9 +63,16 @@ describe 'Rooms API' do
 
 			expect(r.owner_id).to eq @glenn.id	
 			expect(r.name).to eq "Team Fables assemblee"
-			expect(r.users.count).to eq 3
+			expect(r.participants.count).to eq 1
 
-			expect(r.users.include?(@leo)).to eq true
+			requests = Api::Presence.where(['room_id = ?', r.id])
+
+			expect(requests.count).to eq 3
+			expect(r.pending_users.count).to eq 3
+
+			expect(r.pending_users.include?(@leo)).to eq true
+			expect(r.pending_users.include?(@olly)).to eq true
+			expect(r.pending_users.include?(@thib)).to eq true
 		end
 	end
 
@@ -111,7 +118,7 @@ describe 'Rooms API' do
 	end
 
 	describe 'POST /rooms/:id/users' do
-		it 'should add user to room' do
+		it 'should invite user to room' do
 
 			room_params = {
 				:room => {
@@ -125,7 +132,9 @@ describe 'Rooms API' do
 
 			r = Api::Room.find @glennRoom.id
 
-			expect(r.users.count).to eq 2
+			expect(r.pending_users.count).to eq 2
+			expect(@leo.requesting_rooms.include?(r)).to eq true
+			expect(@olly.requesting_rooms.include?(r)).to eq true
 		end
 
 		it 'should not add if user is not friend' do

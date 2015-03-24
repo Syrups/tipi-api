@@ -68,8 +68,8 @@ describe 'Story API' do
 			@fableRoom = FactoryGirl.create :room, owner_id: @leo.id, name: 'Fables'
 			@syrupsRoom = FactoryGirl.create :room, owner_id: @glenn.id, name: 'Syrups'
 
-			@fableRoom.users << @olly
-			@syrupsRoom.users << @olly
+			@fableRoom.add_user @olly
+			@syrupsRoom.add_user @olly
 
 			story_params = {
 				:story => {

@@ -30,7 +30,10 @@ class Api::User < ActiveRecord::Base
 
 	# Rooms
 
-	has_and_belongs_to_many :rooms
+	has_many :accepted_presences, -> { where "active = true" }, class_name: 'Api::Presence', foreign_key: 'user_id'
+	has_many :pending_presences, -> { where "active = false" }, class_name: 'Api::Presence', foreign_key: 'user_id'
+	has_many :rooms, through: :accepted_presences, source: :room
+	has_many :requesting_rooms, through: :pending_presences, source: :room
 	has_many :owned_rooms, class_name: 'Api::Room', foreign_key: 'owner_id'
 
 	# Audio biography/avatar

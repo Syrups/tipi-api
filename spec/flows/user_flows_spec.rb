@@ -44,7 +44,7 @@ RSpec.describe "UserFlows", type: :request do
 			room_params = {
 				:room => {
 					:name => 'Fables team',
-					:users => [@leo.id, @glenn.id, @olly.id]
+					:users => [@glenn.id, @olly.id]
 				}
 			}.to_json
 
@@ -54,6 +54,11 @@ RSpec.describe "UserFlows", type: :request do
 
 			@room = Api::Room.take
 			expect(@room).to be_present
+
+			expect(@room.pending_users.count).to eq 2
+
+			@room.add_user @glenn
+			@room.add_user @olly
 
 			story_params = {
 				:story => {

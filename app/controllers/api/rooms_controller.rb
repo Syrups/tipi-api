@@ -23,7 +23,7 @@ class Api::RoomsController < ApiController
 					user = Api::User.find user_id;
 
 					if(user.present?)
-						@room.users << user
+						@room.invite_user user
 					end
 				end
 			end
