@@ -3,11 +3,11 @@ class Api::MediaController < ApiController
 
 	api!
 	def create
-		name = media_params[:file].original_filename
+		name = params[:file].original_filename
     directory = "#{::Rails.root}/spec/fixtures/output"
     path = File.join(directory, name)
 
-    File.open(path, "wb") { |f| f.write(media_params[:file].read) }
+    File.open(path, "wb") { |f| f.write(params[:file].read) }
 
     @page = Api::Page.find params[:page_id]
     @media = @page.create_media!(file: "#{::Rails.root}/spec/fixtures/output/#{name}")

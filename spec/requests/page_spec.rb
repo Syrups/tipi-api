@@ -40,9 +40,7 @@ describe 'Page API' do
 			bulk_sound = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'bah.WAV'), 'audio/x-wav')
 
 			file_params = {
-				:audio => {
 					:file => bulk_sound
-				}
 			}
 
 			post api("/pages/#{@page.id}/audio"), file_params, api_headers(token: @glenn.token)
@@ -62,9 +60,7 @@ describe 'Page API' do
 			media = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'steph.jpg'), 'image/jpeg')
 
 			file_params = {
-				:media => {
 					:file => media
-				}
 			}
 
 			post api("/pages/#{@page.id}/media"), file_params, api_headers(token: @glenn.token)

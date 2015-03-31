@@ -4,11 +4,11 @@ class Api::AudiosController < ApiController
 	api!
 	def create
 		
-		name = audio_params[:file].original_filename
+		name = params[:file].original_filename
 	    directory = "#{::Rails.root}/spec/fixtures/output"
 	    path = File.join(directory, name)
 
-	    File.open(path, "wb") { |f| f.write(audio_params[:file].read) }
+	    File.open(path, "wb") { |f| f.write(params[:file].read) }
 
 	    @page = Api::Page.find params[:page_id]
 	    @audio = @page.create_audio!(file: "#{::Rails.root}/spec/fixtures/output/#{name}")

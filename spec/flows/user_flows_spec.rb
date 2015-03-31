@@ -105,9 +105,8 @@ RSpec.describe "UserFlows", type: :request do
 			media = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'steph.jpg'), 'image/jpeg')
 
 			file_params = {
-				:media => {
 					:file => media
-				}
+
 			}
 
 			@page = @story.pages.first
