@@ -4,8 +4,10 @@ class Api::AudiosController < ApiController
 	api!
 	def create
 		
-		name = params[:file].original_filename
-	    directory = "#{::Rails.root}/spec/fixtures/output"
+		original_filename = params[:file].original_filename
+		rand = SecureRandom.hex
+		name = Digest::SHA2.new(256).hexdigest(original_filename + rand) + '.m4a'
+    directory = "#{::Rails.root}/public/uploads/audio"
 	    path = File.join(directory, name)
 
 	    File.open(path, "wb") { |f| f.write(params[:file].read) }

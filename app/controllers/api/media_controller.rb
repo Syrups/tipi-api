@@ -3,8 +3,11 @@ class Api::MediaController < ApiController
 
 	api!
 	def create
-		name = params[:file].original_filename
-    directory = "#{::Rails.root}/spec/fixtures/output"
+
+		original_filename = params[:file].original_filename
+		rand = SecureRandom.hex
+		name = Digest::SHA2.new(256).hexdigest(original_filename + rand) + '.jpg'
+    directory = "#{::Rails.root}/public/uploads/media"
     path = File.join(directory, name)
 
     File.open(path, "wb") { |f| f.write(params[:file].read) }
@@ -13,7 +16,7 @@ class Api::MediaController < ApiController
     @media = @page.create_media!(file: "#{::Rails.root}/spec/fixtures/output/#{name}")
     
 		if @page.save
-			render json: @page, status: :created
+			render json: @page.to_json(:include => [ :media ]), status: :created
 		else
 			render nothing: true, status: :bad_request
 		end
