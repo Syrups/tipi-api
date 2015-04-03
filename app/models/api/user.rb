@@ -61,6 +61,18 @@ class Api::User < ActiveRecord::Base
 		relation.update!(active: true)
 	end
 
+	# Remove a friendship
+	def unfriend(friend)
+		relation = Api::Friendship.where(['user_id = ? and friend_id = ?', friend.id, id]).first
+
+		if relation.nil?
+			relation = Api::Friendship.where(['friend_id = ? and user_id = ?', friend.id, id]).first
+			relation.destroy!
+		else
+			relation.destroy!
+		end
+	end
+
 	# All incoming and outcoming friends
 	def friends
 		incoming_friends | outcoming_friends
