@@ -11,10 +11,14 @@ class Api::CommentsController < ApiController
 
 	api!
 	def create
-		@comment = @page.comments.create!(comment_params)
-		@comment.create_audio!(audio_params)
+		if params[:file].present?
+			@comment = @page.comments.create!
+			@comment.create_audio!(file: params[:file])
 
-		render json: @comment, status: :created
+			render json: @comment, status: :created
+		else
+			render nothing: true, status: :bad_request
+		end
 	end
 
 	api!

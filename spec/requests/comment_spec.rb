@@ -14,11 +14,7 @@ describe 'Comments API' do
 	describe 'POST /pages/:id/comments' do
 		it 'should create comment on page' do
 			post api("/pages/#{@page.id}/comments"), {
-				:comment => {
-					:audio => {
-						:file => 'sample.m4a'
-					}
-				}
+					:file => 'sample.m4a'
 			}.to_json, api_headers(token: @leo.token)
 
 			@page.reload
@@ -31,11 +27,7 @@ describe 'Comments API' do
 
 		it 'should not create comment without access to page' do
 			post api("/pages/#{@page.id}/comments"), {
-				:comment => {
-					:audio => {
 						:file => 'sample.m4a'
-					}
-				}
 			}.to_json, api_headers(token: @glenn.token)
 
 			expect(response.status).to eq 404
