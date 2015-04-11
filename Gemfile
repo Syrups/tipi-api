@@ -68,5 +68,5 @@ group :development, :test do
   gem 'sqlite3'
 end
 
-ruby "2.0.0"
+ruby "2.1.5"
 
