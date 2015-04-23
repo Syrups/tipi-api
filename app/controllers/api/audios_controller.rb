@@ -7,13 +7,19 @@ class Api::AudiosController < ApiController
 		original_filename = params[:file].original_filename
 		rand = SecureRandom.hex
 		name = Digest::SHA2.new(256).hexdigest(original_filename + rand) + '.m4a'
-    directory = "#{::Rails.root}/public/uploads/audio"
-	    path = File.join(directory, name)
 
-	    File.open(path, "wb") { |f| f.write(params[:file].read) }
+		# Upload to S3
+		obj = s3.bucket('tipi-media').object(name)
+		obj.upload_file(params[:file].tempfile.path, acl:'public-read')
+
+
+    # directory = "#{::Rails.root}/public/uploads/audio"
+	   #  path = File.join(directory, name)
+
+	   #  File.open(path, "wb") { |f| f.write(params[:file].read) }
 
 	    @page = Api::Page.find params[:page_id]
-	    @audio = @page.create_audio!(file: "#{::Rails.root}/spec/fixtures/output/#{name}")
+	    @audio = @page.create_audio!(file: obj.public_url)
 	    
 		if @page.save
 			render json: @page, status: :created
