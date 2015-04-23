@@ -10,7 +10,7 @@ class Api::AudiosController < ApiController
 
 		# Upload to S3
 		obj = s3.bucket('tipi-media').object(name)
-		obj.upload_file(params[:file].tempfile.path, acl:'public-read')
+		obj.upload_file(params[:file], acl:'public-read')
 
 
     # directory = "#{::Rails.root}/public/uploads/audio"
