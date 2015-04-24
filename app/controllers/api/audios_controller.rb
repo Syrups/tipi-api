@@ -9,7 +9,7 @@ class Api::AudiosController < ApiController
 		name = Digest::SHA2.new(256).hexdigest(original_filename + rand) + '.m4a'
 
 		# Upload to S3
-		obj = s3.bucket('tipi-media').object(name)
+		obj = ::Storage.s3.bucket('tipi-media').object(name)
 		obj.upload_file(params[:file], acl:'public-read')
 
 

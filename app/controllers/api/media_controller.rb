@@ -9,7 +9,7 @@ class Api::MediaController < ApiController
 		name = Digest::SHA2.new(256).hexdigest(original_filename + rand) + '.jpg'
 
 		# Upload to S3
-		obj = s3.bucket('tipi-media').object(name)
+		obj = ::Storages3.bucket('tipi-media').object(name)
 		obj.upload_file(params[:file], acl:'public-read')
 
     # directory = "#{::Rails.root}/public/uploads/media"
