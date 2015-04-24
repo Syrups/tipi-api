@@ -17,6 +17,12 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :friends, only: [:create, :index] do
+          delete '/', on: :collection, to: 'friends#destroy'
+          put '/accept', on: :collection, to: 'friends#accept'
+          get '/requests', on: :collection, to: 'friends#pending'
+        end
+
         resources :rooms, shallow: true, except: [:new, :edit] do
           get '/stories', on: :member, to: 'rooms#stories'
           get '/users', on: :member, to: 'rooms#index_users'
@@ -34,6 +40,7 @@ Rails.application.routes.draw do
         get '/subscribed', on: :member, to: 'users#subscribed'
         get '/subscribers', on: :member, to: 'users#subscribers'
         get '/invitations', on: :member, to: 'users#invitations'
+        get '/tags', on: :member, to: 'users#tags'
         
       end
 

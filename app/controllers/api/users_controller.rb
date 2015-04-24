@@ -92,6 +92,18 @@ class Api::UsersController < ApiController
     render json: @stories, status: :ok
   end
 
+  api!
+  def tags
+    stories = @user.stories.order('created_at DESC')
+    tags = []
+
+    stories.each do |s|
+      tags << s.tag
+    end
+
+    render json: tags
+  end
+
   private
   	def find_user
       if params[:user_id].present?

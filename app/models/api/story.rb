@@ -22,7 +22,7 @@ class Api::Story < ActiveRecord::Base
 	end
 
 	def json_with_pages
-		to_json(:include =>  { :pages => { :include => [:audio, :media] }, :user => {} })
+		to_json(:include =>  { :pages => { :include => [:audio, :media, :comments] }, :user => {} })
 	end
 
 	def can_read?(reader)

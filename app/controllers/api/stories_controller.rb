@@ -63,7 +63,7 @@ class Api::StoriesController < ApiController
 			render json: @story.json_with_pages
 		else
 			if @story.receivers.include?(@current_user)
-				render :json => @story.to_json(:include => [:receivers, :pages]) 
+				render json: @story.json_with_pages
 			else
 				render nothing: true, status: :unauthorized
 			end
