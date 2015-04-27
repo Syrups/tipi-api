@@ -20,5 +20,6 @@ class Push
 	private
 		def self.send_ios(user, message)
 			note = APNS::Notification.new(user.device_token, :alert => message, :badge => 1, :sound => 'default', :content_available => true)
+			APNS.send_notifications [ note ]
 		end
 end
