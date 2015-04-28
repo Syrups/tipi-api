@@ -80,7 +80,10 @@ class Api::User < ActiveRecord::Base
 
 	# All incoming and outcoming friends
 	def all_rooms
-		owned_rooms | rooms
+		all = owned_rooms | rooms
+
+		# order by activity
+		all.join(:stories).order('count(stories.id) desc')
 	end
 
 	def subscribe_to(user)
