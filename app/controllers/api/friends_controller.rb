@@ -7,6 +7,8 @@ class Api::FriendsController < ApiController
 			friend = Api::User.find(params[:friend_id])
 			current_user.add_friend friend
 
+			::Push.send(friend, current_user.username + " souhaite vous ajouter parmi ses amis")
+
 			render json: friend.to_json(:exclude => [:token, :salt, :password]), status: :created
 		rescue ActiveRecord::RecordNotFound
 			render nothing: true, status: :not_found
@@ -25,6 +27,8 @@ class Api::FriendsController < ApiController
 		begin
 			friend = Api::User.find(params[:friend_id])
 			current_user.accept_friend friend
+
+			::Push.send(friend, current_user.username + " a accepté votre demande d'ami")
 
 			render nothing: true, status: :ok
 		rescue ActiveRecord::RecordNotFound
