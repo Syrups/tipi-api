@@ -72,7 +72,7 @@ class Api::RoomsController < ApiController
 		elsif (params.has_key?(:user))
 			render json: @room.stories_of_user(params[:user]), status: :ok
 		else
-			render json: @room.stories, status: :ok
+			render json: @room.stories_with_pages, status: :ok
 		end		
 	end
 

@@ -83,7 +83,7 @@ class Api::User < ActiveRecord::Base
 		all = owned_rooms | rooms
 
 		# order by activity
-		all.join(:stories).order('count(stories.id) desc')
+		all.join(:stories).order('updated_at desc')
 	end
 
 	def subscribe_to(user)
