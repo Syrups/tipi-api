@@ -32,6 +32,8 @@ class Api::StoriesController < ApiController
 						if room.participants.include?(current_user)
 							@story.rooms << room
 
+							room.update!(updated_at: Time.now)
+
 							# Notify all members of the room
 							::Push.send_to_many(room.participants, "Une nouvelle histoire a été partagée par "+@user.username+" dans \""+room.name+"\"")
 						else

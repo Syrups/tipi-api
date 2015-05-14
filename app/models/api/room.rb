@@ -19,6 +19,10 @@ class Api::Room < ActiveRecord::Base
 		stories.where('user_id = :user_id', user_id: user_id)
 	end
 
+	def stories_with_pages
+		stories.to_json(:include =>  { :pages => { :include => [:audio, :media, :comments] }, :user => {} })
+	end
+
 	def is_owner?(user)
 		owner.id == user.id
 	end
