@@ -154,9 +154,9 @@ class Api::RoomsController < ApiController
 			end
 
 			render json: @room, status: :created
+		else
+			render nothing: true, status: :bad_request
 		end
-
-		render nothing: true, status: :bad_request
 	end
 
 	private
