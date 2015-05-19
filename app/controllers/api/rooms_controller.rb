@@ -135,6 +135,26 @@ class Api::RoomsController < ApiController
 		end
 	end
 
+	api!
+	def invite_user
+		if (params.has_key?(:users))
+			users = params[:users]
+
+			users.each do |id|
+				begin
+					user = Api::User.find id
+					@room.invite_user user
+
+					::Push.send(user, current_user.username + " vous invite à rejoindre le feu de camp \"" + @room.name + "\"")
+
+					render json: user, status: :created
+				rescue ActiveRecord::RecordNotFound
+					render nothing: true, status: :not_found
+				end
+			end
+		end
+	end
+
 	private
 		def find_room
 			begin
