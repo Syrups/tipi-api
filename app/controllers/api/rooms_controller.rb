@@ -146,13 +146,17 @@ class Api::RoomsController < ApiController
 					@room.invite_user user
 
 					::Push.send(user, current_user.username + " vous invite à rejoindre le feu de camp \"" + @room.name + "\"")
-
-					render json: user, status: :created
+					
 				rescue ActiveRecord::RecordNotFound
-					render nothing: true, status: :not_found
+					render nothing: true, status: :not_found and return
 				end
+
 			end
+
+			render json: @room, status: :created
 		end
+
+		render nothing: true, status: :bad_request
 	end
 
 	private
