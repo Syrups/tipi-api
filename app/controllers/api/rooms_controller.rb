@@ -48,7 +48,7 @@ class Api::RoomsController < ApiController
 	api!
 	def index
 		@rooms = current_user.all_rooms
-    	render json: @rooms.to_json(:include => [:users, :owner]), status: :ok
+    	render json: @rooms.to_json(:include => [:participants, :owner]), status: :ok
 	end
 
 	api!
