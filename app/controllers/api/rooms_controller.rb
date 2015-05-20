@@ -48,7 +48,7 @@ class Api::RoomsController < ApiController
 	api!
 	def index
 		@rooms = current_user.all_rooms
-    	render json: @rooms.to_json(:include => [:users, :owner]), status: :ok
+    	render json: @rooms.to_json(:include => [:participants, :owner]), status: :ok
 	end
 
 	api!
@@ -130,6 +130,30 @@ class Api::RoomsController < ApiController
 			else
 				render nothing: true, status: :bad_request
 			end
+		else
+			render nothing: true, status: :bad_request
+		end
+	end
+
+	api!
+	def invite_user
+		if (params.has_key?(:users))
+			users = params[:users]
+
+			users.each do |id|
+				begin
+					user = Api::User.find id
+					@room.invite_user user
+
+					::Push.send(user, current_user.username + " vous invite à rejoindre le feu de camp \"" + @room.name + "\"")
+					
+				rescue ActiveRecord::RecordNotFound
+					render nothing: true, status: :not_found and return
+				end
+
+			end
+
+			render json: @room, status: :created
 		else
 			render nothing: true, status: :bad_request
 		end
