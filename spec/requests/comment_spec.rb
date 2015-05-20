@@ -13,9 +13,20 @@ describe 'Comments API' do
 
 	describe 'POST /pages/:id/comments' do
 		it 'should create comment on page' do
-			post api("/pages/#{@page.id}/comments"), {
-					:file => 'sample.m4a'
-			}.to_json, api_headers(token: @leo.token)
+
+			bulk_sound = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'bah.WAV'), 'audio/x-wav')
+
+			comment_params = {
+					:file => bulk_sound,
+					:timecode => 1,
+					:duration => 0.4
+			}
+
+			post api("/pages/#{@page.id}/comments"), comment_params, api_headers(token: @leo.token)
+
+			#post api("/pages/#{@page.id}/comments"), {
+			#		:file => 'sample.m4a'
+			#}.to_json, api_headers(token: @leo.token)
 
 			@page.reload
 
