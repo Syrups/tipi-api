@@ -36,6 +36,8 @@ class Api::StoriesController < ApiController
 
 							# Notify all members of the room
 							::Push.send_to_many(room.participants, "Une nouvelle histoire a été partagée par "+@user.username+" dans \""+room.name+"\"")
+
+							render json: @story, status: :created
 						else
 							render nothing: true, status: :not_found and return
 						end
