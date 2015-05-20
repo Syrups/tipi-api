@@ -12,8 +12,18 @@ class Api::CommentsController < ApiController
 	api!
 	def create
 		if params[:file].present?
-			@comment = @page.comments.create!
-			@comment.create_audio!(file: params[:file])
+
+			# File upload
+			original_filename = params[:file].original_filename
+			rand = SecureRandom.hex
+			name = Digest::SHA2.new(256).hexdigest(original_filename + rand) + '.m4a'
+
+			# Upload to S3
+			obj = ::Storage.s3.bucket('tipi-media').object(name)
+			obj.upload_file(params[:file], acl:'public-read')
+
+			@comment = @page.comments.create!(timecode: params[:timecode])
+			@comment.create_audio!(file: obj.public_url, duration: params[:duration])
 
 			render json: @comment, status: :created
 		else
