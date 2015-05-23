@@ -30,6 +30,7 @@ Rails.application.routes.draw do
           delete '/stories/:story_id', on: :member, to: 'rooms#remove_story'
           delete '/users/:user_id', on: :member, to: 'rooms#remove_user'
           post '/invite', on: :member, to: 'rooms#invite_user'
+          post '/join', on: :member, to: 'rooms#join'
         end
 
         resources :subscriptions, shallow: true, only: [:index, :create, :update]

@@ -159,6 +159,13 @@ class Api::RoomsController < ApiController
 		end
 	end
 
+	api!
+	def join
+		@room.add_user current_user
+
+		render json: @room.to_json(:include => :owner), status: :created
+	end
+
 	private
 		def find_room
 			begin
