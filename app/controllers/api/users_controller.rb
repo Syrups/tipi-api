@@ -76,7 +76,7 @@ class Api::UsersController < ApiController
   end
 
   def invitations
-    render json: @user.requesting_rooms, status: :ok
+    render json: @user.requesting_rooms.to_json(:include => :owner), status: :ok
   end
 
   api!
