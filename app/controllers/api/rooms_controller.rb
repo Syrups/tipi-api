@@ -3,7 +3,7 @@ require 'securerandom'
 class Api::RoomsController < ApiController
 
 	before_filter :authenticate_request
-	before_filter :find_room, except: [:create, :index, :show, :search]
+	before_filter :find_room, except: [:create, :index, :show, :search, :join]
 
 	api!
 	def create
