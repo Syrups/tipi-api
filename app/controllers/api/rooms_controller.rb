@@ -161,9 +161,14 @@ class Api::RoomsController < ApiController
 
 	api!
 	def join
-		@room.add_user current_user
+		begin
+			@room = Api::Room.find params[:id]
+			@room.add_user current_user
 
-		render json: @room.to_json(:include => :owner), status: :created
+			render json: @room.to_json(:include => :owner), status: :created
+		rescue ActiveRecord::RecordNotFound
+			render nothing: true, status: :not_found
+		end
 	end
 
 	private
