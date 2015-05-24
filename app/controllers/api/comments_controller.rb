@@ -22,7 +22,7 @@ class Api::CommentsController < ApiController
 			obj = ::Storage.s3.bucket('tipi-media').object(name)
 			obj.upload_file(params[:file], acl:'public-read')
 
-			@comment = @page.comments.create!(timecode: params[:timecode])
+			@comment = @page.comments.create!(timecode: params[:timecode], duration: params[:duration])
 			@comment.create_audio!(file: obj.public_url, duration: params[:duration])
 
 			render json: @comment, status: :created
