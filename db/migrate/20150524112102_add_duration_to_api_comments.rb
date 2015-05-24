@@ -1,5 +1,5 @@
 class AddDurationToApiComments < ActiveRecord::Migration
   def change
-  	add_column :api_users, :duration, :integer
+  	add_column :api_comments, :duration, :integer
   end
 end
