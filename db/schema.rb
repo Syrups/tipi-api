@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 20150524112102) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "user_id"
+    t.integer  "timecode"
+    t.integer  "duration"
   end
 
   create_table "api_friendships", force: :cascade do |t|
@@ -136,8 +138,6 @@ ActiveRecord::Schema.define(version: 20150524112102) do
     t.integer  "audio_id"
     t.string   "device_token"
     t.string   "device_type"
-    t.integer  "timecode"
-    t.integer  "duration"
   end
 
 end
