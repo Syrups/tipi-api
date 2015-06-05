@@ -23,6 +23,9 @@ class Api::UsersController < ApiController
 
     	@user = Api::User.new(username: user[:username], device_token: user[:device_token], device_type: user[:device_type], password: password, salt: salt, token: token)
 
+      tipi = Api::Room.find_by tipi_room: true
+      tipi.add_user @user
+
     	if @user.save!
     	  render json: @user, status: :created
     	else
