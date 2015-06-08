@@ -20,7 +20,7 @@ class Api::Room < ActiveRecord::Base
 	end
 
 	def stories_with_pages
-		stories.to_json(:include =>  { :pages => { :include => [:audio, :media, :comments] }, :user => {} })
+		stories.to_json(:include =>  { :pages => { :include => { :audio => {}, :media => {}, :comments => { :include => { :user } } } }, :user => {} })
 	end
 
 	def is_owner?(user)
