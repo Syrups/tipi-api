@@ -25,6 +25,8 @@ class Api::CommentsController < ApiController
 			@comment = @page.comments.create!(timecode: params[:timecode], duration: params[:duration], user_id: current_user.id)
 			@comment.create_audio!(file: obj.public_url, duration: params[:duration])
 
+			::Push.send(@page.story.user, current_user.username + " a enregistré un nouveau commentaire sur votre histoire \"" + @page.story.title + "\"")
+
 			render json: @comment, status: :created
 		else
 			render nothing: true, status: :bad_request
