@@ -32,4 +32,15 @@ class Api::Story < ActiveRecord::Base
 	def can_touch(toucher)
 		is_owner? reader
 	end
+
+	def clean?
+		pages.each do |p|
+			if not p.media.present? or not p.audio.present?
+				return false
+			end
+		end
+
+		return true
+	end
+	
 end
